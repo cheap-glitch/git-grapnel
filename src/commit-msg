@@ -41,7 +41,7 @@ if [[ ${IS_FORK} -eq 0 ]]; then
 	# Check that the message is correctly formatted according to the Conventional Commit specs
 	if [[ ! "${MESSAGE}" =~ ^(([a-z]+)!?(\([a-z]+\))?):[[:space:]]([0-9A-Z].+)$ ]]; then
 		echo -e "Please use the following format for your commit messages:"
-		echo -e "<type>[!][(scope)]: <description>"
+		echo -e "<type>[!][(scope)]: <Description>"
 		exit 1
 	fi
 
@@ -67,7 +67,7 @@ typos=''
 aspell_typos=$(echo "${desc//\\n/ }" | aspell list --lang="${SPELLCHECK_LANG}" --add-extra-dicts="${DIR}/dict/commit-msg-dictionary")
 for typo in ${aspell_typos}; do
 	# Ignore misspelled words inside back quotes
-	if ! contains "${desc}" '`'"${typo}"'`'; then typos="${typos} ${typo}"; fi
+	if ! contains "${desc}" '`'"${typo}"; then typos="${typos} ${typo}"; fi
 done
 
 # Highlight the misspelled words in red and prompt to ignore the mistakes or not
@@ -75,7 +75,7 @@ if [[ -n ${typos} ]]; then
 	hl="${desc}"
 	for typo in ${typos}; do hl="$(echo -e "${hl}" | sed 's/'"${typo}"'/'"\\\e[31m${typo}\\\e[0m"'/g')"; done
 
-	echo -e "Some spelling mistakes were detected:\n${hl}\n"
+	echo -e "Some spelling mistakes were detected:\n\n${hl}\n"
 	confirm "Still commit with this message" "y"
 fi
 
