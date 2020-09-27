@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "scripts": {
+    "lint": "shellcheck --enable=all --external-sources $(fd -t x . src)",
+    "test": "bats test"
+  }
+}
