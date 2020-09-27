@@ -8,6 +8,8 @@ DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 source "${DIR}/helpers/confirm.sh"
 # shellcheck source=src/helpers/contains.sh
 source "${DIR}/helpers/contains.sh"
+# shellcheck source=src/helpers/separator.sh
+source "${DIR}/helpers/separator.sh"
 # shellcheck source=src/helpers/is-fork.sh
 source "${DIR}/helpers/is-fork.sh"
 
@@ -75,7 +77,11 @@ if [[ -n ${typos} ]]; then
 	hl="${desc}"
 	for typo in ${typos}; do hl="$(echo -e "${hl}" | sed 's/'"${typo}"'/'"\\\e[31m${typo}\\\e[0m"'/g')"; done
 
-	echo -e "Some spelling mistakes were detected:\n\n${hl}\n"
+	echo -e "Some spelling mistakes were detected:"
+	draw_separator
+	echo -e "${hl}"
+	draw_separator
+
 	confirm "Still commit with this message" "y"
 fi
 
