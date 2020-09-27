@@ -13,6 +13,7 @@ source "${DIR}/helpers/is-fork.sh"
 
 MESSAGE="$(grep -v '^#' "$1")"
 SPELLCHECK_LANG='en'
+IS_FORK=$(is_fork)
 declare -A COMMIT_TYPES=(
 	[build]='🔨'
 	[chore]='🔧'
@@ -35,7 +36,8 @@ declare -A COMMIT_TYPES=(
 # Do nothing if the message is exactly the same as the one from the latest commit (meaning `git commit --amend` or `git fixup` has been used)
 if git rev-parse --is-inside-work-tree &> /dev/null && [[ "${MESSAGE}" == "$(git rev-list -n 1 --format=%B HEAD | sed '1d')" ]]; then exit 0; fi
 
-if ! is_fork; then
+# Only enforce the CC format in my own repos
+if [[ ${IS_FORK} -eq 0 ]]; then
 	# Check that the message is correctly formatted according to the Conventional Commit specs
 	if [[ ! "${MESSAGE}" =~ ^(([a-z]+)!?(\([a-z]+\))?):[[:space:]]([0-9A-Z].+)$ ]]; then
 		echo -e "Please use the following format for your commit messages:"
@@ -77,7 +79,7 @@ if [[ -n ${typos} ]]; then
 	confirm "Still commit with this message" "y"
 fi
 
-if ! is_fork; then
+if [[ ${IS_FORK} -eq 0 ]]; then
 	# Add the corresponding emoji before the type and save the modified message
 	echo -e "${COMMIT_TYPES[${type}]} ${label}: ${desc}" > "$1"
 fi
