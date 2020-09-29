@@ -13,7 +13,8 @@ source "${DIR}/helpers/separator.sh"
 # shellcheck source=src/helpers/is-fork.sh
 source "${DIR}/helpers/is-fork.sh"
 
-MESSAGE="$(grep -v '^#' "$1")"
+TMPFILE="$1"
+MESSAGE="$(grep -v '^#' "${TMPFILE}")"
 SPELLCHECK_LANG='en'
 IS_FORK=$(is_fork)
 declare -A COMMIT_TYPES=(
@@ -69,7 +70,7 @@ typos=''
 aspell_typos=$(echo "${desc//\\n/ }" | aspell list --lang="${SPELLCHECK_LANG}" --add-extra-dicts="${DIR}/dict/commit-msg-dictionary")
 for typo in ${aspell_typos}; do
 	# Ignore misspelled words inside back quotes
-	if ! contains "${desc}" '`'"${typo}"; then typos="${typos} ${typo}"; fi
+	if ! contains "${desc}" '`'"${typo}" && ! contains "${desc}" "${typo}"'`'; then typos="${typos} ${typo}"; fi
 done
 
 # Highlight the misspelled words in red and prompt to ignore the mistakes or not
@@ -87,5 +88,7 @@ fi
 
 if [[ ${IS_FORK} -eq 0 ]]; then
 	# Add the corresponding emoji before the type and save the modified message
-	echo -e "${COMMIT_TYPES[${type}]} ${label}: ${desc}" > "$1"
+	echo -ne "${COMMIT_TYPES[${type}]} ${label}: ${desc}" > "${TMPFILE}"
+else
+	echo -ne "${desc}" > "${TMPFILE}"
 fi
