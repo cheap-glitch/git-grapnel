@@ -1,6 +1,7 @@
 personal_ws-1.1 en 0
 CLI
 DOM
+SCSS
 SVG
 ToC
 TypeScript
@@ -44,3 +45,4 @@ util
 utils
 validator
 validators
+whitespace
