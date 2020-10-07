@@ -69,8 +69,8 @@ desc="${desc//\'\'/\`}"
 typos=''
 aspell_typos=$(echo "${desc//\\n/ }" | aspell list --lang="${SPELLCHECK_LANG}" --add-extra-dicts="${DIR}/dict/commit-msg-dictionary")
 for typo in ${aspell_typos}; do
-	# Ignore misspelled words inside back quotes
-	if ! contains "${desc}" '`'"${typo}" && ! contains "${desc}" "${typo}"'`'; then typos="${typos} ${typo}"; fi
+	# Ignore misspelled words and function names inside back quotes
+	if ! contains "${desc}" '`'"${typo}"'`' && ! contains "${desc}" '`'"${typo}"'()`'; then typos="${typos} ${typo}"; fi
 done
 
 # Highlight the misspelled words in red and prompt to ignore the mistakes or not
