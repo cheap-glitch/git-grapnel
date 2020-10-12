@@ -15,8 +15,9 @@ confirm() {
 		if [[ -z "${answer}" ]]; then answer="${default_answer}"; fi
 
 		case ${answer} in
-			[Nn]) exit 1 ;;
-			[Yy]) break  ;;
+			[Nn]) exit 1   ;;
+			[Yy]) break    ;;
+			*)    continue ;;
 		esac
 	done
 
