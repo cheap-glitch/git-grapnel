@@ -1,3 +1,5 @@
+# shellcheck shell=bash
+
 confirm() {
 	local prompt="$1"
 	local default_answer="$2"
