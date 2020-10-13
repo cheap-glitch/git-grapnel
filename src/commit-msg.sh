@@ -15,7 +15,6 @@ source "${DIR}/helpers/is-fork.sh"
 TMPFILE="$1"
 MESSAGE="$(grep -v '^#' "${TMPFILE}")"
 SPELLCHECK_LANG='en'
-IS_FORK=$(is_fork)
 declare -A COMMIT_TYPES=(
 	[build]='🔨'
 	[chore]='🔧'
@@ -39,7 +38,7 @@ declare -A COMMIT_TYPES=(
 if git rev-parse --is-inside-work-tree &> /dev/null && [[ "${MESSAGE}" == "$(git rev-list -n 1 --format=%B HEAD | sed '1d')" ]]; then exit 0; fi
 
 # Only enforce the CC format in my own repos
-if [[ ${IS_FORK} -eq 0 ]]; then
+if ! is_fork; then
 	# Check that the message is correctly formatted according to the Conventional Commit specs
 	if [[ ! "${MESSAGE}" =~ ^(([a-z]+)!?(\([a-z]+\))?):[[:space:]]([0-9A-Z].+)$ ]]; then
 		echo -e "Please use the following format for your commit messages:"
@@ -66,7 +65,7 @@ desc="${desc//\'\'/\`}"
 
 # Check the spelling of the description
 typos=''
-aspell_typos=$(echo "${desc//\\n/ }" | aspell list --lang="${SPELLCHECK_LANG}" --add-extra-dicts="${DIR}/dict/commit-msg-dictionary")
+aspell_typos=$(echo "${desc//\\n/ }" | aspell list --lang="${SPELLCHECK_LANG}" --add-extra-dicts="${DIR}/dict/commit-msg")
 for typo in ${aspell_typos}; do
 	# Ignore misspelled words and function names inside back quotes
 	if ! contains "${desc}" '`'"${typo}"'`' && ! contains "${desc}" '`'"${typo}"'()`'; then typos="${typos} ${typo}"; fi
@@ -85,7 +84,7 @@ if [[ -n ${typos} ]]; then
 	confirm "Still commit with this message" "y"
 fi
 
-if [[ ${IS_FORK} -eq 0 ]]; then
+if ! is_fork; then
 	# Add the corresponding emoji before the type and save the modified message
 	echo -ne "${COMMIT_TYPES[${type}]} ${label}: ${desc}" > "${TMPFILE}"
 else

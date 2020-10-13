@@ -1,8 +1,11 @@
 # shellcheck shell=bash
 
+# shellcheck source=src/helpers/cache.sh
+source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/cache.sh"
+
 is_fork() {
 	local repo_url
 	repo_url="https://api.github.com/repos/cheap-glitch/$(basename "$(git root)")"
 
-	if [[ "$(curl --silent "${repo_url}" | jq -r .fork)" == 'true' ]]; then echo 1; else echo 0; fi
+	[[ "$(cache "isRepo.\"${repo_url}\"" "curl --silent ${repo_url} | jq -r .fork")" == 'true' ]]
 }
