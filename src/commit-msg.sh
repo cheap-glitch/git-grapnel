@@ -1,7 +1,6 @@
 #!/bin/bash
-
-# This hook is invoked by git-commit and git-merge,
-# and can be bypassed with the `--no-verify` option.
+set -eu -o pipefail
+IFS=$'\n\t'
 
 DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 # shellcheck source=src/helpers/confirm.sh
@@ -79,9 +78,9 @@ if [[ -n ${typos} ]]; then
 	for typo in ${typos}; do hl="$(echo -e "${hl}" | sed 's/'"${typo}"'/'"\\\e[31m${typo}\\\e[0m"'/g')"; done
 
 	echo -e "Some spelling mistakes were detected:"
-	draw_separator
+	separator
 	echo -e "${hl}"
-	draw_separator
+	separator
 
 	confirm "Still commit with this message" "y"
 fi

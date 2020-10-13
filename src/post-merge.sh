@@ -1,7 +1,6 @@
 #!/bin/bash
-
-# This hook is invoked by git-merge, which happens
-# e.g. when a pull is done on a local repository.
+set -eu -o pipefail
+IFS=$'\n\t'
 
 DIR="$(dirname "${BASH_SOURCE[0]}")"
 # shellcheck source=src/helpers/is-changed.sh

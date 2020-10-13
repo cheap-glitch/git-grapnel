@@ -1,7 +1,6 @@
 #!/bin/bash
-
-# This hook is invoked by git-commit,
-# and can be bypassed with the `--no-verify` option.
+set -eu -o pipefail
+IFS=$'\n\t'
 
 EXCLUDE_FROM_COMMITS='
 .codecov.yml

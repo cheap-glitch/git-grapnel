@@ -1,6 +1,6 @@
 #!/bin/bash
-
-# This hook is invoked by git-push.
+set -eu -o pipefail
+IFS=$'\n\t'
 
 if [[ ! -f package.json ]]; then exit 0; fi
 
