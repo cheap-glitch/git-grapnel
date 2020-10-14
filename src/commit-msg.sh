@@ -70,9 +70,10 @@ for typo in ${aspell_typos}; do
 	# Ignore misspelled words and function names inside back quotes
 	if ! contains "${desc}" '`'"${typo}"'`' && ! contains "${desc}" '`'"${typo}"'()`'; then typos="${typos} ${typo}"; fi
 done
+typos="${typos/ }"
 
 # Highlight the misspelled words in red and prompt to ignore the mistakes or not
-if [[ -n ${typos} ]]; then
+if [[ -n "${typos}" ]]; then
 	hl="${desc}"
 	for typo in ${typos}; do hl="$(echo -e "${hl}" | sed 's/'"${typo}"'/'"\\\e[31m${typo}\\\e[0m"'/g')"; done
 
