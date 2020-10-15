@@ -1,37 +1,39 @@
 <div align="center"><img src="./docs/banner.png" width="380" alt="A drawing of a grappling hook, with the word “git-grapnel” under it."></div>
 <p>&nbsp;</p>
 
-This is a collection of client-side git hooks  I use in all my repos, written in
-Bash.
-These aren't meant to  be used as-is, but rather as examples  for you own hooks.
-Each script is  linted with [shellcheck](https://github.com/koalaman/shellcheck)
-and tested with [bats](https://github.com/bats-core/bats-core).
+> This  is  a collection  of  client-side  git hooks  I  use  in all  my  repos,
+> written  in Bash.  These  aren't  meant to  be  used  as&#8209;is, but  rather
+> as  examples  and  inspiration  for  you own  hooks.  Each  script  is  linted
+> with  [shellcheck](https://github.com/koalaman/shellcheck)   and  tested  with
+> [bats](https://github.com/bats-core/bats-core).
 
-## Hooks
+## About git hooks
 
 A hook is  simply an executable file  that git will call either  before or after
 performing some operation. A  hook is always run at the  root of the repository,
 and is  passed some arguments  relevant to the  on-going operation. It  can also
 force git to abort the current task by returning a non-zero exit code.
 
+## Hooks
+
 ### [`pre-commit`](https://github.com/cheap-glitch/git-grapnel/blob/main/src/pre-commit.sh)
-This hook  is run whenever committing  to the repo,  and can be bypassed  by the
+This hook is run  whenever committing to the repo, and can  be bypassed with the
 `--no-verify` option.
 
 The script prevents committing at all if  there's no `.gitignore` in the repo or
 if some "dangerous" files aren't properly excluded.
 
 ### [`commit-msg`](https://github.com/cheap-glitch/git-grapnel/blob/main/src/commit-msg.sh)
-This hook  is run whenever committing  to the repo,  and can be bypassed  by the
+This hook is run  whenever committing to the repo, and can  be bypassed with the
 `--no-verify` option.
 
 For repos owned by the committer (i.e., repos that aren't GitHub forks), it will:
  * enforce the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification
- * add an emoji before the commit message
+ * add an emoji before the commit message type
 
 It will also, regardless of the repo type:
  * check the spelling of  the whole  message (including an optional description)
-   and warn of possible typos
+   and highlight possible typos
  * convert  pairs of  single  quotes (`''`) into  a single  back quote  (this is
    useful when you're used to surrounding your commit message with double quotes
    on the command line)
@@ -44,7 +46,7 @@ External programs used:
  * `aspell` to check for possible misspelled words
 
 ### [`pre-push`](https://github.com/cheap-glitch/git-grapnel/blob/main/src/pre-push.sh)
-This  hook is  run whenever  pushing to  a remote,  and can  be bypassed  by the
+This hook  is run whenever  pushing to  a remote, and  can be bypassed  with the
 `--no-verify` option.
 
 It  automatically lints  the codebase  and run  the testing  scripts present  in
@@ -89,5 +91,5 @@ some hooks set up:
 
 ## Related
 
- * [Pro Git, 8.3 Customizing Git - Git Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) - More info on git hooks
- * [git-toolbelt](https://github.com/nvie/git-toolbelt) - A collection of convenient utilities for scripting git
+ * [Pro Git, 8.3 Customizing Git - Git Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) - More infos on git hooks
+ * [git-toolbelt](https://github.com/nvie/git-toolbelt) - A collection of convenient utilities for everyday git usage
