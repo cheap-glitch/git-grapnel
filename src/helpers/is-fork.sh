@@ -5,7 +5,7 @@ source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/cache.sh"
 
 is_fork() {
 	local repo_url
-	repo_url="https://api.github.com/repos/cheap-glitch/$(basename "$(pwd)")"
+	repo_url="https://api.github.com/repos/$(git config --get user.name)/$(basename "$(pwd)")"
 
 	[[ "$(cache "isRepo.\"${repo_url}\"" "curl --silent ${repo_url} | jq -r .fork")" == 'true' ]]
 }
