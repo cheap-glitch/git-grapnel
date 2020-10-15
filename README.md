@@ -1,26 +1,54 @@
 <div align="center"><img src="./docs/banner.png" width="380" alt="A drawing of a grappling hook, with the word “git-grapnel” under it."></div>
 <p>&nbsp;</p>
 
-This is a collection of git hooks I use every day, written in Bash. These aren't
-meant to be used as-is, but rather as examples for you own hooks. Each script is
-linted with [shellcheck](https://github.com/koalaman/shellcheck) and tested with
-[bats](https://github.com/bats-core/bats-core).
+This is a collection of client-side git  hooks I use every day, written in Bash.
+These aren't meant to  be used as-is, but rather as examples  for you own hooks.
+Each script is  linted with [shellcheck](https://github.com/koalaman/shellcheck)
+and tested with [bats](https://github.com/bats-core/bats-core).
 
 ## Hooks
 
-### `commit-msg`
-TODO
+### [`pre-commit`](https://github.com/cheap-glitch/git-grapnel/blob/main/src/pre-commit.sh)
+This hook  is run whenever committing  to the repo,  and can be bypassed  by the
+`--no-verify` option.
 
-### `post-merge`
-TODO
+The script prevents committing at all if  there's no `.gitignore` in the repo or
+if some "dangerous" files aren't properly excluded.
 
-### `pre-commit`
-TODO
+### [`commit-msg`](https://github.com/cheap-glitch/git-grapnel/blob/main/src/commit-msg.sh)
+This hook  is run whenever committing  to the repo,  and can be bypassed  by the
+`--no-verify` option.
 
-### `pre-push`
-TODO
+For repos owned by the committer (i.e., repos that aren't GitHub forks), it will:
+ * enforce the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification
+ * add an emoji before the commit message
 
-## Installing a hook
+It will also, regardless of the repo type:
+ * check the spelling of  the whole  message (including an optional description)
+   and warn of possible typos
+ * convert  pairs of  single  quotes (`''`) into  a single  back quote  (this is
+   useful when you're used to surrounding your commit message with double quotes
+   on the command line)
+
+Amending commits that don't modify the commit message are ignored.
+
+External programs used:
+ * `curl` and [jq](https://stedolan.github.io/jq/) to check for forks and  cache
+   the result
+ * `aspell` to check for possible misspelled words
+
+### [`pre-push`](https://github.com/cheap-glitch/git-grapnel/blob/main/src/pre-push.sh)
+This  hook is  run whenever  pushing to  a remote,  and can  be bypassed  by the
+`--no-verify` option.
+
+It automatically runs any linting and testing scripts present in `package.json`,
+and prevents the transfer of objects should any of them fail.
+
+### [`post-merge`](https://github.com/cheap-glitch/git-grapnel/blob/main/src/post-merge.sh)
+This hook  is run after  a successful merge. It  reinstalls the Node  modules as
+needed to keep them in sync with `package-lock.json`.
+
+## Installing a client-side hook
 
 ### Copying the script
 The simplest way to install a hook script is to copy it in the `hooks` directory
@@ -47,4 +75,13 @@ done
 ```
 
 ### Add a hook to every new git repo
-TODO
+You can  use a git template  to ensure that  every newly created repo  will have
+some hooks set up:
+ 1. Create an empty folder somewhere (e.g. `~/.my-git-template/`)
+ 2. Add a `hooks` folder in it with the scripts you want to use
+ 3. Run `git config --global init.templateDir ~/.my-git-template`
+
+## Related
+
+ * [Pro Git, 8.3 Customizing Git - Git Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) - More info on git hooks
+ * [git-toolbelt](https://github.com/nvie/git-toolbelt) - A collection of convenient utilities for scripting git
