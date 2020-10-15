@@ -9,6 +9,11 @@ and tested with [bats](https://github.com/bats-core/bats-core).
 
 ## Hooks
 
+A hook is  simply an executable file  that git will call either  before or after
+performing some operation. A  hook is always run at the  root of the repository,
+and is  passed some arguments  relevant to the  on-going operation. It  can also
+force git to abort the current task by returning a non-zero exit code.
+
 ### [`pre-commit`](https://github.com/cheap-glitch/git-grapnel/blob/main/src/pre-commit.sh)
 This hook  is run whenever committing  to the repo,  and can be bypassed  by the
 `--no-verify` option.
@@ -42,8 +47,8 @@ External programs used:
 This  hook is  run whenever  pushing to  a remote,  and can  be bypassed  by the
 `--no-verify` option.
 
-It automatically runs any linting and testing scripts present in `package.json`,
-and prevents the transfer of objects should any of them fail.
+It  automatically lints  the codebase  and run  the testing  scripts present  in
+`package.json`, preventing the transfer of objects should any of them fail.
 
 ### [`post-merge`](https://github.com/cheap-glitch/git-grapnel/blob/main/src/post-merge.sh)
 This hook  is run after  a successful merge. It  reinstalls the Node  modules as

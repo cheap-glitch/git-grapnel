@@ -2,22 +2,28 @@
 set -eu -o pipefail
 IFS=$'\n\t'
 
-if [[ ! -f package.json ]]; then exit 0; fi
-
 npm_scripts_have() {
 	jq -e .scripts."\"$1\"" package.json &> /dev/null
 }
 
-# Lint the code and abort the push on error
-if npm_scripts_have 'lint'; then
-	if ! npm run lint; then exit 1; fi
+#
+# JavaScript
+#
+if [[ -f package.json ]]; then
+	# Lint the code and abort the push on error
+	if npm_scripts_have 'lint'; then npm run lint; fi
+
+	# Report the code coverage (and implicitly run the tests)
+	if npm_scripts_have 'coverage:report'; then npm run coverage:report
+
+	# If there is no coverage command, just run the tests
+	elif npm_scripts_have 'test'; then npm test; fi
 fi
 
-# Report the code coverage (and implicitly run the tests)
-if npm_scripts_have 'coverage:report'; then
-	if ! npm run coverage:report; then exit 1; fi
-
-# If there is no coverage command, just run the tests
-elif npm_scripts_have 'test'; then
-	if ! npm test; then exit 1; fi
+#
+# Rust
+#
+if [[ -f Cargo.toml ]]; then
+	# Lint the code and abort the push on error
+	cargo clippy -- -W clippy::pedantic -W clippy::cargo
 fi
