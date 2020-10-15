@@ -53,7 +53,7 @@ if ! is_fork; then
 
 	# Check that the type is in the list of predefined commit types
 	if ! contains "${!COMMIT_TYPES[*]}" "${type}"; then
-		echo -e "Please use one of those commit types for your message:\n$(echo "${!COMMIT_TYPES[*]}" | tr ' ' '\n' | sort | ts ' *')"
+		echo -e "Please use one of the following commit types for your message:\n$(echo "${!COMMIT_TYPES[*]}" | tr ' ' '\n' | sort | ts '  *')"
 		exit 1
 	fi
 else

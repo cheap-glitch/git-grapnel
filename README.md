@@ -43,8 +43,6 @@ for gitfolder in $(fd -H -t d '^.git$' "${HOME}"); do
 	for hook in /path/to/hooks/folder/*.sh; do
 		ln -sf -T "${hook}" "${gitfolder}/hooks/$(basename "${hook}" .sh)"
 	done
-
-	log_ok "$(echo "${gitfolder}" | cut -d '/' -f '4-')"
 done
 ```
 

@@ -2,7 +2,7 @@
 set -eu -o pipefail
 IFS=$'\n\t'
 
-DIR="$(dirname "${BASH_SOURCE[0]}")"
+DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 # shellcheck source=src/helpers/is-changed.sh
 source "${DIR}/helpers/is-changed.sh"
 
