@@ -1,7 +1,8 @@
 <div align="center"><img src="./docs/banner.png" width="380" alt="A drawing of a grappling hook, with the word “git-grapnel” under it."></div>
 <p>&nbsp;</p>
 
-This is a collection of client-side git  hooks I use every day, written in Bash.
+This is a collection of client-side git hooks  I use in all my repos, written in
+Bash.
 These aren't meant to  be used as-is, but rather as examples  for you own hooks.
 Each script is  linted with [shellcheck](https://github.com/koalaman/shellcheck)
 and tested with [bats](https://github.com/bats-core/bats-core).

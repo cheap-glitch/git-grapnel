@@ -13,7 +13,7 @@ source "${DIR}/helpers/separator.sh"
 source "${DIR}/helpers/is-fork.sh"
 
 TMPFILE="$1"
-MESSAGE="$(grep -v '^#' "${TMPFILE}")"
+MESSAGE="$(rg -v '^#' "${TMPFILE}")"
 SPELLCHECK_LANG='en'
 declare -A COMMIT_TYPES=(
 	[build]='🔨'
