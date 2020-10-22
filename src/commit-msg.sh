@@ -64,18 +64,16 @@ fi
 desc="${desc//\'\'/\`}"
 
 # Check the spelling of the description
-typos=''
-aspell_typos=$(echo "${desc//\\n/ }" | aspell list --lang="${SPELLCHECK_LANG}" --add-extra-dicts="${DIR}/dict/commit-msg")
-for typo in ${aspell_typos}; do
+typos=()
+for typo in $(echo "${desc//\\n/ }" | aspell list --lang="${SPELLCHECK_LANG}" --add-extra-dicts="${DIR}/dict/commit-msg"); do
 	# Ignore misspelled words and function names inside back quotes
-	if ! contains "${desc}" '`'"${typo}"'`' && ! contains "${desc}" '`'"${typo}"'()`'; then typos="${typos} ${typo}"; fi
+	if ! contains "${desc}" '`'"${typo}"'`' && ! contains "${desc}" '`'"${typo}"'()`'; then typos+=("${typo}"); fi
 done
-typos="${typos/ }"
 
 # Highlight the misspelled words in red and prompt to ignore the mistakes or not
-if [[ -n "${typos}" ]]; then
+if [[ ${#typos[@]} -ge 1 ]]; then
 	hl="${desc}"
-	for typo in ${typos}; do hl="$(echo -e "${hl}" | sed 's/'"${typo}"'/'"\\\e[31m${typo}\\\e[0m"'/g')"; done
+	for typo in "${typos[@]}"; do hl="$(echo -e "${hl}" | sed 's/'"${typo}"'/'"\\\e[31m${typo}\\\e[0m"'/g')"; done
 
 	echo -e "Some spelling mistakes were detected:"
 	separator
