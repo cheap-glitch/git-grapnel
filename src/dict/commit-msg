@@ -1,6 +1,8 @@
 personal_ws-1.1 en 0
 CLI
 DOM
+GIF
+GraphQL
 SCSS
 SVG
 ToC
@@ -17,12 +19,14 @@ favicon
 fretboard
 fullscreen
 getter
+gif
 gitignore
 html
 info
 infos
 init
 json
+linter
 md
 middleware
 minified
