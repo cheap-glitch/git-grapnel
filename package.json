@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "lint": "shellcheck --enable=all --external-sources $(fd --extension sh . src)",
-    "test": "bats test"
+    "test": "bats test",
+    "test:coverage": "bashcov -- /usr/bin/bats test && xdg-open coverage/index.html"
   }
 }
