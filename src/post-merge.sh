@@ -6,4 +6,4 @@ DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 # shellcheck source=src/helpers/is-changed.sh
 source "${DIR}/helpers/is-changed.sh"
 
-if is_changed 'package-lock.json'; then npm install; fi
+if is_changed 'package-lock.json'; then npm clean-install; fi
