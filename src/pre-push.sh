@@ -24,6 +24,9 @@ fi
 # Rust
 #
 if [[ -f Cargo.toml ]]; then
-	# Lint the code and abort the push on error
+	# Lint the code
 	cargo clippy -- -W clippy::pedantic -W clippy::cargo
+
+	# Run the tests and abort the push on error
+	cargo test
 fi
