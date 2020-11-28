@@ -41,6 +41,8 @@ repo
 repos
 rustfmt
 savepoint
+stdin
+stdout
 stylesheet
 stylesheets
 tooltip
