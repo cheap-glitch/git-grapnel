@@ -3,7 +3,7 @@ set -eu -o pipefail
 IFS=$'\n\t'
 
 npm_scripts_have() {
-	jq -e .scripts."\"$1\"" package.json &> /dev/null
+	jq --exit-status .scripts."\"$1\"" package.json &> /dev/null
 }
 
 #
