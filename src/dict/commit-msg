@@ -1,6 +1,8 @@
 personal_ws-1.1 en 0
 CLI
+CommonJS
 DOM
+ESM
 GIF
 GraphQL
 SCSS
@@ -15,6 +17,7 @@ colorschemes
 config
 dev
 dir
+dropdown
 favicon
 fretboard
 fullscreen
