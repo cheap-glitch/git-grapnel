@@ -11,11 +11,11 @@ cache() {
 	[[ ! -d "${CACHEDIR}"  ]] && mkdir -p "${CACHEDIR}"
 	[[ ! -f "${CACHEFILE}" ]] && echo '{}' > "${CACHEFILE}"
 
-	value="$(jq --raw-output ".${key}" "${CACHEFILE}")"
+	value="$(jq --raw-output --monochrome-output ".${key}" "${CACHEFILE}")"
 
 	if [[ "${value}" == 'null' ]]; then
 		value="$(bash -c "${command}")"
-		jq --monochrome-output ".${key} = \"${value}\"" "${CACHEFILE}" | sponge "${CACHEFILE}"
+		jq --raw-output --monochrome-output ".${key} = \"${value}\"" "${CACHEFILE}" | sponge "${CACHEFILE}"
 	fi
 
 	echo -n "${value}"
