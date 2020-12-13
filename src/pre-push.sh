@@ -2,31 +2,30 @@
 set -eu -o pipefail
 IFS=$'\n\t'
 
-npm_scripts_have() {
-	jq --exit-status .scripts."\"$1\"" package.json &> /dev/null
-}
+DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+# shellcheck source=src/helpers/is-fork.sh
+source "${DIR}/helpers/is-fork.sh"
+# shellcheck source=src/helpers/run-npm-script.sh
+source "${DIR}/helpers/run-npm-script.sh"
 
-#
-# JavaScript
-#
+# Node
 if [[ -f package.json ]]; then
-	# Lint the code and abort the push on error
-	if npm_scripts_have 'lint'; then npm run lint; fi
+	if is_fork || [[ "$(jq --raw-output --monochrome-output '"git-hooks"."pre-push".noVerify // false' package.json)" == 'true' ]]; then
+		echo_bold "Skipping lints and tests!"
+		exit 0
+	fi
 
-	# Report the code coverage (and implicitly run the tests)
-	if npm_scripts_have 'coverage:report'; then npm run coverage:report
+	run_npm_script 'lint'
+	run_npm_script 'test'
+	run_npm_script 'upload:coverage'
 
-	# If there is no coverage command, just run the tests
-	elif npm_scripts_have 'test'; then npm test; fi
+	exit 0
 fi
 
-#
 # Rust
-#
 if [[ -f Cargo.toml ]]; then
-	# Lint the code
-	cargo clippy -- -W clippy::pedantic -W clippy::cargo
-
-	# Run the tests and abort the push on error
+	cargo clippy -- -W clippy::cargo
 	cargo test
+
+	exit 0
 fi
