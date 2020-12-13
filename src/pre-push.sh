@@ -10,7 +10,7 @@ source "${DIR}/helpers/run-npm-script.sh"
 
 # Node
 if [[ -f package.json ]]; then
-	if is_fork || [[ "$(jq --raw-output --monochrome-output '"git-hooks"."pre-push".noVerify // false' package.json)" == 'true' ]]; then
+	if is_fork || [[ "$(jq --raw-output --monochrome-output '."git-hooks"."pre-push".noVerify // false' package.json)" == 'true' ]]; then
 		echo_bold "Skipping lints and tests!"
 		exit 0
 	fi
