@@ -8,6 +8,9 @@ source "${DIR}/helpers/is-fork.sh"
 
 EXCLUDE_FROM_COMMITS='
 .codecov.yml
+.coverage
+.coveralls.yml
+.env
 .npmrc
 .nyc_output
 build
@@ -17,7 +20,7 @@ test-app
 '
 
 if ! is_fork; then
-	# Ensure the repo has a gitignore
+	# Ensure the repo has a .gitignore
 	if [[ ! -f .gitignore ]]; then echo "Need a .gitignore!"; exit 1; fi
 
 	# Ensure that some dangerous files and folders are not committed
