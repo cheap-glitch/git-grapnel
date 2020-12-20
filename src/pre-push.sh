@@ -30,3 +30,11 @@ if [[ -f Cargo.toml ]]; then
 
 	exit 0
 fi
+
+# Deno
+if [[ -f index.ts ]]; then
+	deno lint --unstable
+	deno test --coverage --unstable
+
+	exit 0
+fi
