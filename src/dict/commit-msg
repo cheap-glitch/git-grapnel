@@ -2,11 +2,14 @@ personal_ws-1.1 en 0
 CLI
 CommonJS
 DOM
+Deno
 ESM
 GIF
 GraphQL
+Node
 SCSS
 SVG
+TODO
 ToC
 TypeScript
 UI
@@ -48,8 +51,10 @@ stdin
 stdout
 stylesheet
 stylesheets
+todo
 tooltip
 tooltips
+unformatted
 util
 utils
 validator
