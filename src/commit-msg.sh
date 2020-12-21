@@ -40,16 +40,16 @@ if git rev-parse --is-inside-work-tree &> /dev/null && git rev-list HEAD &> /dev
 # Only enforce the CC format in my own repos
 if ! is_fork; then
 	# Check that the message is correctly formatted according to the Conventional Commit specs
-	if [[ ! "${MESSAGE}" =~ ^(([a-z]+)!?(\([a-z]+\))?):[[:space:]]([0-9A-Z].+)$ ]]; then
+	if [[ ! "${MESSAGE}" =~ ^(.{1,2} {1,2})?(([a-z]+)!?(\([a-z]+\))?):[[:space:]]([0-9A-Z].+)$ ]]; then
 		echo -e "Please use the following format for your commit messages:"
 		echo -e "<type>[!][(scope)]: <Description>"
 		exit 1
 	fi
 
 	# Get the commit type and description from the matching groups
-	label="${BASH_REMATCH[1]}"
-	type="${BASH_REMATCH[2]}"
-	desc="${BASH_REMATCH[4]}"
+	label="${BASH_REMATCH[2]}"
+	type="${BASH_REMATCH[3]}"
+	desc="${BASH_REMATCH[5]}"
 
 	# Check that the type is in the list of predefined commit types
 	if ! contains "${!COMMIT_TYPES[*]}" "${type}"; then

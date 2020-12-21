@@ -71,3 +71,16 @@ commit() {
 	run ./src/commit-msg.sh "$(commit "feat: Add a feature\n\nThis is a new feature!")"
 	[ "$(cat "${BATS_TMPDIR}/message")" == "$(echo -e "🌱 feat: Add a feature\n\nThis is a new feature!")" ]
 }
+
+@test "emojis before the commit type are ignored" { # {{{
+
+	./src/commit-msg.sh "$(commit "🌱 feat: Add a feature")"
+	[ "$(cat "${COMMIT_MSG_FILE}")" == "🌱 feat: Add a feature" ]
+
+	./src/commit-msg.sh "$(commit "📖 docs: Update readme")"
+	[ "$(cat "${COMMIT_MSG_FILE}")" == "📖 docs: Update readme" ]
+
+	./src/commit-msg.sh "$(commit "♻️  refactor: Rename all functions")"
+	[ "$(cat "${COMMIT_MSG_FILE}")" == "♻️  refactor: Rename all functions" ]
+
+} # }}}
