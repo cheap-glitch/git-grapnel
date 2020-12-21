@@ -67,7 +67,7 @@ commit() {
 	[ "$(cat "${BATS_TMPDIR}/message")" == "📖 docs: Update readme" ]
 }
 
-# @test "works with multi-line commits" {
-# 	run ./src/commit-msg.sh "$(commit "feat: Add a feature\n\nThis is a new feature!")"
-# 	[ "$(cat "${BATS_TMPDIR}/message")" == "🌱 feat: Add a feature\n\nThis is a new feature!" ]
-# }
+@test "multi-line commits work too" {
+	run ./src/commit-msg.sh "$(commit "feat: Add a feature\n\nThis is a new feature!")"
+	[ "$(cat "${BATS_TMPDIR}/message")" == "$(echo -e "🌱 feat: Add a feature\n\nThis is a new feature!")" ]
+}
