@@ -21,8 +21,8 @@ commit() {
 	run ./src/commit-msg.sh "$(commit "fix(core: Fix a bug")"
 	[ "${status}" -eq 1 ]
 
-	# run ./src/commit-msg.sh "$(commit "chore: Update dependencies.")"
-	# [ "${status}" -eq 1 ]
+	run ./src/commit-msg.sh "$(commit "chore: Update dependencies.")"
+	[ "${status}" -eq 1 ]
 
 } # }}}
 
@@ -73,8 +73,8 @@ commit() {
 
 @test "multi-line commits work too" { # {{{
 
-	./src/commit-msg.sh "$(commit "feat: Add a feature\n\nThis is a new feature!")"
-	[ "$(cat "${COMMIT_MSG_FILE}")" == "$(echo -e "🌱 feat: Add a feature\n\nThis is a new feature!")" ]
+	./src/commit-msg.sh "$(commit "feat: Add a feature\n\nThis is a new feature.")"
+	[ "$(cat "${COMMIT_MSG_FILE}")" == "$(echo -e "🌱 feat: Add a feature\n\nThis is a new feature.")" ]
 
 } # }}}
 

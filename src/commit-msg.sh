@@ -13,7 +13,7 @@ source "${DIR}/helpers/separator.sh"
 source "${DIR}/helpers/is-fork.sh"
 
 TMPFILE="$1"
-MESSAGE="$(rg -v '^#' "${TMPFILE}")"
+MESSAGE="$(rg --invert-match '^#' "${TMPFILE}")"
 SPELLCHECK_LANG='en'
 declare -A COMMIT_TYPES=(
 	[build]='🔨'
@@ -41,38 +41,45 @@ if git rev-parse --is-inside-work-tree &> /dev/null && git rev-list HEAD &> /dev
 if ! is_fork; then
 	# Check that the message is correctly formatted according to the Conventional Commit specs
 	if [[ ! "${MESSAGE}" =~ ^(.{1,2} {1,2})?(([a-z]+)!?(\([a-z]+\))?):[[:space:]]([0-9A-Z].+)$ ]]; then
-		echo -e "Please use the following format for your commit messages:"
-		echo -e "<type>[!][(scope)]: <Description>"
+		echo "Please use the following format for your commit messages:"
+		echo "<type>[!][(scope)]: <Description>"
 		exit 1
 	fi
 
 	# Get the commit type and description from the matching groups
-	label="${BASH_REMATCH[2]}"
-	type="${BASH_REMATCH[3]}"
-	desc="${BASH_REMATCH[5]}"
+	label="${BASH_REMATCH[2]:-}"
+	type="${BASH_REMATCH[3]:-}"
+	description="${BASH_REMATCH[5]:-}"
+	summary="$(echo -e "${description}" | sed 1q)"
 
 	# Check that the type is in the list of predefined commit types
 	if ! contains "${!COMMIT_TYPES[*]}" "${type}"; then
 		echo -e "Please use one of the following commit types for your message:\n$(echo "${!COMMIT_TYPES[*]}" | tr ' ' '\n' | sort | ts '  *')"
 		exit 1
 	fi
+
+	# Check that the summary does NOT end with a period
+	if [[ "${summary: -1}" == '.' ]]; then
+		echo "Please remove the period at the end of the summary"
+		exit 1
+	fi
 else
-	desc="${MESSAGE}"
+	description="${MESSAGE}"
 fi
 
 # Convert pairs of simple quotes into single back quotes in the description
-desc="${desc//\'\'/\`}"
+description="${description//\'\'/\`}"
 
 # Check the spelling of the description
 typos=()
-for typo in $(echo "${desc//\\n/ }" | aspell list --lang="${SPELLCHECK_LANG}" --add-extra-dicts="${DIR}/dict/commit-msg"); do
+for typo in $(echo "${description//\\n/ }" | aspell list --lang="${SPELLCHECK_LANG}" --add-extra-dicts="${DIR}/dict/commit-msg"); do
 	# Ignore misspelled words and function names inside back quotes
-	if ! contains "${desc}" '`'"${typo}"'`' && ! contains "${desc}" '`'"${typo}"'()`'; then typos+=("${typo}"); fi
+	if ! contains "${description}" '`'"${typo}"'`' && ! contains "${description}" '`'"${typo}"'()`'; then typos+=("${typo}"); fi
 done
 
 # Highlight the misspelled words in red and prompt to ignore the mistakes or not
 if [[ ${#typos[@]} -ge 1 ]]; then
-	hl="${desc}"
+	hl="${description}"
 	for typo in "${typos[@]}"; do hl="$(echo -e "${hl}" | sed 's/'"${typo}"'/'"\\\e[31m${typo}\\\e[0m"'/g')"; done
 
 	echo -e "Some spelling mistakes were detected:"
@@ -85,7 +92,7 @@ fi
 
 if ! is_fork; then
 	# Add the corresponding emoji before the type and save the modified message
-	echo -ne "${COMMIT_TYPES[${type}]} ${label}: ${desc}" > "${TMPFILE}"
+	echo -ne "${COMMIT_TYPES[${type}]} ${label}: ${description}" > "${TMPFILE}"
 else
-	echo -ne "${desc}" > "${TMPFILE}"
+	echo -ne "${description}" > "${TMPFILE}"
 fi
