@@ -3,7 +3,7 @@ set -eu -o pipefail
 IFS=$'\n\t'
 
 DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-# shellcheck source=src/helpers/is-fork.sh
+# shellcheck source=helpers/is-fork.sh
 source "${DIR}/helpers/is-fork.sh"
 
 EXCLUDE_FROM_COMMITS='

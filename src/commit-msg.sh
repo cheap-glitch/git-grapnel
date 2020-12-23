@@ -3,13 +3,13 @@ set -eu -o pipefail
 IFS=$'\n\t'
 
 DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-# shellcheck source=src/helpers/confirm.sh
+# shellcheck source=helpers/confirm.sh
 source "${DIR}/helpers/confirm.sh"
-# shellcheck source=src/helpers/contains.sh
+# shellcheck source=helpers/contains.sh
 source "${DIR}/helpers/contains.sh"
-# shellcheck source=src/helpers/separator.sh
+# shellcheck source=helpers/separator.sh
 source "${DIR}/helpers/separator.sh"
-# shellcheck source=src/helpers/is-fork.sh
+# shellcheck source=helpers/is-fork.sh
 source "${DIR}/helpers/is-fork.sh"
 
 TMPFILE="$1"

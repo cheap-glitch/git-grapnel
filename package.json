@@ -17,7 +17,7 @@
     "test": "test"
   },
   "scripts": {
-    "lint": "shellcheck --enable=all --external-sources $(fd --extension sh . src)",
+    "lint": "cd src && shellcheck --enable=all --external-sources *.sh",
     "test": "bats test"
   }
 }
