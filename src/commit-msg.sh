@@ -10,6 +10,8 @@ source "${DIR}/helpers/contains.sh"
 # shellcheck source=helpers/is-fork.sh
 source "${DIR}/helpers/is-fork.sh"
 
+if [[ -f package.json ]] && [[ "$(jq --raw-output --monochrome-output '."git-hooks"."commit-msg".noVerify // false' package.json)" == 'true' ]]; then exit 0; fi
+
 TMPFILE="$1"
 MESSAGE="$(rg --invert-match '^#' "${TMPFILE}")"
 SPELLCHECK_LANG='en'
