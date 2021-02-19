@@ -7,16 +7,16 @@ DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 source "${DIR}/helpers/is-fork.sh"
 
 EXCLUDE_FROM_COMMITS='
+.coverage/
+.nyc_output/
+build/
+dist/
+node_modules/
+test-app/
 .codecov.yml
-.coverage
 .coveralls.yml
 .env
 .npmrc
-.nyc_output
-build
-dist
-node_modules
-test-app
 '
 
 if ! is_fork; then
@@ -25,9 +25,14 @@ if ! is_fork; then
 
 	# Ensure that some dangerous files and folders are not committed
 	for exclude in ${EXCLUDE_FROM_COMMITS}; do
-		if rg -Fq "${exclude}" .gitignore; then continue; fi
+		if rg --fixed-strings --quiet "${exclude}" .gitignore; then continue; fi
 
 		if [[ -f "${exclude}" ]]; then echo   "File '${exclude}' should be added to .gitignore!"; exit 1; fi
 		if [[ -d "${exclude}" ]]; then echo "Folder '${exclude}' should be added to .gitignore!"; exit 1; fi
 	done
+
+	# Lint staged JavaScript/TypeScript files
+	if jq --exit-status .devDependencies.eslint package.json &> /dev/null; then
+		npx eslint "$(git --no-pager diff --staged --name-only | rg '\.(js|ts)$')"
+	fi
 fi
