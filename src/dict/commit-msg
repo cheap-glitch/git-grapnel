@@ -3,6 +3,7 @@ CLI
 CommonJS
 DOM
 Deno
+ESLint
 ESM
 GIF
 GraphQL
@@ -14,6 +15,7 @@ ToC
 TypeScript
 UI
 Vue
+changelog
 clippy
 colorscheme
 colorschemes
@@ -47,6 +49,7 @@ repo
 repos
 rustfmt
 savepoint
+semver
 stdin
 stdout
 stylesheet
