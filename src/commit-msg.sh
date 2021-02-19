@@ -7,8 +7,6 @@ DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 source "${DIR}/helpers/confirm.sh"
 # shellcheck source=helpers/contains.sh
 source "${DIR}/helpers/contains.sh"
-# shellcheck source=helpers/separator.sh
-source "${DIR}/helpers/separator.sh"
 # shellcheck source=helpers/is-fork.sh
 source "${DIR}/helpers/is-fork.sh"
 
@@ -37,7 +35,7 @@ declare -A COMMIT_TYPES=(
 # Do nothing if the message is exactly the same as the one from the latest commit (meaning `git commit --amend` or `git fixup` has been used)
 if git rev-parse --is-inside-work-tree &> /dev/null && git rev-list HEAD &> /dev/null && [[ "${MESSAGE}" == "$(git rev-list -n 1 --format=%B HEAD | sed '1d')" ]]; then exit 0; fi
 
-# Only enforce the CC format in my own repos
+# Only enforce the Conventional Commits format in my own repos
 if ! is_fork; then
 	# Check that the message is correctly formatted according to the Conventional Commit specs
 	if [[ ! "${MESSAGE}" =~ ^(.{1,2} {1,2})?(([a-z]+)!?(\([a-z]+\))?):[[:space:]]([0-9A-Z].+)$ ]]; then
@@ -83,10 +81,7 @@ if [[ ${#typos[@]} -ge 1 ]]; then
 	for typo in "${typos[@]}"; do hl="$(echo -e "${hl}" | sed 's/'"${typo}"'/'"\\\e[31m${typo}\\\e[0m"'/g')"; done
 
 	echo -e "Some spelling mistakes were detected:"
-	separator
-	echo -e "${hl}"
-	separator
-
+	echo -e "\n${hl}\n"
 	confirm "Still commit with this message" "y"
 fi
 
