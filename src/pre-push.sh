@@ -16,9 +16,9 @@ if [[ -f package.json ]]; then
 		echo_bold "Skipping lints and tests!\n"
 	else
 		run_npm_script 'lint'
-		run_npm_script 'test'
+		run_npm_script 'coverage' 'test'
 	fi
-	run_npm_script 'upload:coverage'
+	run_npm_script 'coverage:upload' 'upload:coverage'
 
 	exit 0
 fi
