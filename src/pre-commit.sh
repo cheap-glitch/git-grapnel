@@ -33,7 +33,7 @@ if ! is_fork; then
 
 	# Lint staged JavaScript/TypeScript files
 	if [[ ${NO_LINT:-0} -eq 0 ]] && jq --exit-status .devDependencies.eslint package.json &> /dev/null; then
-		readarray -t files <<< "$(git --no-pager diff --staged --name-only | rg '\.(js|ts)$')" || true
+		readarray -t files <<< "$(git --no-pager diff --staged --diff-filter=d --name-only | rg '\.(js|ts)$')" || true
 		if [[ ${#files[@]} -gt 0 && "${files[0]}" != '' ]]; then npx eslint --max-warnings 1 "${files[@]}"; fi
 	fi
 fi
