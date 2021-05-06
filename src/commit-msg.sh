@@ -3,11 +3,11 @@ set -eu -o pipefail
 IFS=$'\n\t'
 
 DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-# shellcheck source=helpers/confirm.sh
+# shellcheck source=src/helpers/confirm.sh
 source "${DIR}/helpers/confirm.sh"
-# shellcheck source=helpers/contains.sh
+# shellcheck source=src/helpers/contains.sh
 source "${DIR}/helpers/contains.sh"
-# shellcheck source=helpers/is-fork.sh
+# shellcheck source=src/helpers/is-fork.sh
 source "${DIR}/helpers/is-fork.sh"
 
 if [[ -f package.json ]] && [[ "$(jq --raw-output --monochrome-output '."git-hooks"."commit-msg".noVerify // false' package.json)" == 'true' ]]; then exit 0; fi

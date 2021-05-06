@@ -3,11 +3,11 @@ set -eu -o pipefail
 IFS=$'\n\t'
 
 DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-# shellcheck source=helpers/echo-bold.sh
+# shellcheck source=src/helpers/echo-bold.sh
 source "${DIR}/helpers/echo-bold.sh"
-# shellcheck source=helpers/is-fork.sh
+# shellcheck source=src/helpers/is-fork.sh
 source "${DIR}/helpers/is-fork.sh"
-# shellcheck source=helpers/run-npm-script.sh
+# shellcheck source=src/helpers/run-npm-script.sh
 source "${DIR}/helpers/run-npm-script.sh"
 
 # Node
