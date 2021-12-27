@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+set -eu -o pipefail
+shopt -u expand_aliases
+IFS=$'\n\t'
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+# shellcheck source=src/helpers/format.sh
+source "${SOURCE_DIR}/helpers/format.sh"
+# shellcheck source=src/helpers/is-own-repo.sh
+source "${SOURCE_DIR}/helpers/is-own-repo.sh"
+# shellcheck source=src/helpers/run-npm-script.sh
+source "${SOURCE_DIR}/helpers/run-npm-script.sh"
+
+if [[ ${GIT_GRAPNEL_PRE_PUSH_CHECKS:-0} -eq 0 ]]; then exit 0; fi
+
+# Node.js
+if [[ -f package.json ]]; then
+	if ! is_own_repo || [[ "$(jq --raw-output '."git-hooks"."pre-push".noVerify // false' package.json)" == 'true' ]]; then
+		echo -e "${FMT_BOLD}Skipping lints and tests!${FMT_RESET}\n"
+	else
+		run_first_available_npm_script lint
+		run_first_available_npm_script coverage test
+	fi
+	run_first_available_npm_script coverage:upload upload:coverage
+	exit 0
+fi
+
+# Rust
+if [[ -f Cargo.toml ]]; then
+	cargo clippy -- -W clippy::cargo
+	cargo test
+	exit 0
+fi
