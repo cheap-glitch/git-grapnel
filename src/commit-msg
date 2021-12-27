@@ -1,0 +1,124 @@
+#!/usr/bin/env bash
+set -eu -o pipefail
+shopt -u expand_aliases
+IFS=$'\n\t'
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+# shellcheck source=src/helpers/confirm.sh
+source "${SOURCE_DIR}/helpers/confirm.sh"
+# shellcheck source=src/helpers/contains.sh
+source "${SOURCE_DIR}/helpers/contains.sh"
+# shellcheck source=src/helpers/is-own-repo.sh
+source "${SOURCE_DIR}/helpers/is-own-repo.sh"
+
+tmpfile="$1"
+message="$(rg --invert-match '^#' --color=never --trim "${tmpfile}")"
+summary="$(head --lines=1 <<< "${message}")"
+details="$(sed 1d <<< "${message}")"
+
+# Do nothing if the message is exactly the same as the one from the latest commit (meaning `git commit --amend` or similar has been used)
+if git rev-parse --is-inside-work-tree &>/dev/null && git rev-list HEAD &>/dev/null && [[ "${message}" == "$(git rev-list -n 1 --format=%B HEAD | sed 1d)" ]]; then exit 0; fi
+
+check_summary_period() {
+	local summary="$1"
+
+	# Check that the summary does NOT end with a period
+	if [[ "${summary: -1}" == '.' ]]; then
+		echo 'Please remove the period at the end of the summary'
+		exit 1
+	fi
+}
+
+# Only enforce specific formats for commit messages in your own repos
+if is_own_repo; then case "${GIT_GRAPNEL_COMMIT_MSG_FORMAT:-}" in
+
+	basic)
+		if [[ "${summary^^}" =~ ^META[^[:alnum:]_] && ! "${summary}" =~ ^(Meta: )[0-9A-Z] ]] || [[ ! "${summary}" =~ ^[0-9A-Z] ]]; then
+			echo 'Please use the following format for your commit messages:'
+			echo '(Meta: )?<Description>'
+			exit 1
+		fi
+
+		check_summary_period "${summary}"
+	;;
+
+	# https://www.conventionalcommits.org/en/v1.0.0/#summary
+	conventional-commits)
+		if [[ ${GIT_GRAPNEL_ADD_EMOJIS:-0} -eq 1 ]]; then
+			emoji_regex='.{1,2} {1,2}'
+		fi
+
+		cc_regex='^('"${emoji_regex:-}"')?(([a-z]+)!?(\([a-z]+\))?): ([0-9A-Z].+)$'
+		if [[ ! "${summary}" =~ ${cc_regex} ]]; then
+			echo 'Please use the following format for your commit messages:'
+			echo '<type>[!][(scope)]: <Description>'
+			exit 1
+		fi
+
+		# Get the commit type and description from the matching groups
+		label="${BASH_REMATCH[2]:-}"
+		type="${BASH_REMATCH[3]:-}"
+		description="${BASH_REMATCH[5]:-}"
+
+		# Check that the type is in the list of predefined commit types
+		declare -A cc_types=(
+			[build]='🔨'
+			[chore]='🔧'
+			[config]='🔩'
+			[deploy]='🚀'
+			[docs]='📖'
+			[feat]='🌱'
+			[fix]='🐛'
+			[init]='🎉️'
+			[lint]='🚨'
+			[perf]='🐎'
+			[refactor]='♻️ '
+			[release]='📦'
+			[revert]='🗑️'
+			[style]='✨'
+			[test]='🚩'
+			[ui]='🎨'
+		)
+		if ! contains "${!cc_types[*]}" "${type}"; then
+			echo 'Please use one of the following commit types for your message:'
+			echo "$(IFS=$'\n'; sort <<< "${!cc_types[*]}" | ts '  *')"
+			exit 1
+		fi
+
+		check_summary_period "${summary}"
+	;;
+
+	*) ;;
+esac; fi
+
+# Convert pairs of simple quotes into single back quotes
+if [[ ${GIT_GRAPNEL_CONVERT_SINGLE_QUOTE_PAIRS:-0} -eq 1 ]]; then message="${message//\'\'/\`}"; fi
+
+# Check the spelling of the message
+if [[ ${GIT_GRAPNEL_SPELLCHECK:-0} -eq 1 ]]; then
+	typos=()
+	for possible_typo in $(aspell list --lang="${GIT_GRAPNEL_SPELL_LANG:-en}" --add-extra-dicts="${SOURCE_DIR}/../dict/commit-msg" <<< "${message//\\n/ }"); do
+		# Ignore misspelled words inside back quotes
+		if [[ "${message}" =~ (^|[[:space:]])\`"${possible_typo}" || "${message}" =~ "${possible_typo}"\`([[:space:]]|$) ]]; then continue; fi
+		typos+=("${possible_typo}")
+	done
+
+	# Highlight the misspelled words in red and prompt whether to ignore the mistakes or not
+	if [[ ${#typos[@]} -ge 1 ]]; then
+		highlighted_message="${message}"
+		for typo in "${typos[@]}"; do
+			# shellcheck disable=SC2001
+			highlighted_message="$(sed 's/'"${typo}"'/'"\\\e[31m${typo}\\\e[0m"'/g' <<< "${highlighted_message}")"
+		done
+		echo -e "Some spelling mistakes were detected:\n${highlighted_message}\n"
+		confirm 'Still commit with this message' y
+	fi
+fi
+
+if [[ ${GIT_GRAPNEL_COMMIT_MSG_FORMAT:-} == conventional-commits && ${GIT_GRAPNEL_ADD_EMOJIS:-0} -eq 1 ]] && is_own_repo; then
+	# Add the corresponding emoji before the type and save the modified message
+	echo -ne "${cc_types[${type}]} ${label}: ${description}$(if [[ -n "${details}" ]]; then echo -ne "\n${details}"; else echo ''; fi)" >"${tmpfile}"
+	exit 0
+fi
+
+echo -ne "${message}" >"${tmpfile}"
