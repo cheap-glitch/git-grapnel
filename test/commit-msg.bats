@@ -1,92 +1,196 @@
 #!/usr/bin/env bats
+# shellcheck disable=SC2016,SC2030,SC2031
 
-COMMIT_MSG_FILE="${BATS_TMPDIR}/commit-message"
-
+COMMIT_MSG_FILE="${BATS_TMPDIR:-}/commit-message"
 commit() {
-	echo "$1" > "${COMMIT_MSG_FILE}"
+	echo "$1" >"${COMMIT_MSG_FILE}"
 	echo "${COMMIT_MSG_FILE}"
 }
 
+setup() {
+	load /usr/lib/bats-support/load.bash
+	load /usr/lib/bats-assert/load.bash
+
+	PATH="${PATH}:$(dirname "${BATS_TEST_FILENAME:-}")/../src"
+
+	export GIT_GRAPNEL_ADD_EMOJIS=0
+	export GIT_GRAPNEL_SPELLCHECK=0
+	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=none
+	export GIT_GRAPNEL_CONVERT_SINGLE_QUOTE_PAIRS=0
+}
+
+# @test "valid commit messages don't trigger an error" { # {{{
+
+# 	run commit-msg "$(commit "add a new feature")"
+# 	assert_success
+
+# 	run commit-msg "$(commit "style: format the code base")"
+# 	assert_success
+
+# 	run commit-msg "$(commit "chore: Update dependencies.")"
+# 	assert_success
+
+# 	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=basic
+
+# 	run commit-msg "$(commit "Add a new feature")"
+# 	assert_success
+
+# 	run commit-msg "$(commit "Fix a nasty bug")"
+# 	assert_success
+
+# 	run commit-msg "$(commit "Meta: Update documentation")"
+# 	assert_success
+
+# 	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=conventional-commits
+
+# 	run commit-msg "$(commit "feat: Add a feature")"
+# 	assert_success
+
+# 	run commit-msg "$(commit "test: Improve the tests")"
+# 	assert_success
+
+# 	run commit-msg "$(commit "fix: Fix a bug")"
+# 	assert_success
+
+# 	run commit-msg "$(commit "feat(parser): Add a feature in the parser")"
+# 	assert_success
+
+# 	run commit-msg "$(commit "refactor!: Create a breaking change")"
+# 	assert_success
+
+# 	run commit-msg "$(commit "revert!(core): Another breaking change")"
+# 	assert_success
+
+# 	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=conventional-commits GIT_GRAPNEL_ADD_EMOJIS=1
+
+# 	run commit-msg "$(commit "🌱 feat: Add a feature")"
+# 	assert_success
+
+# 	run commit-msg "$(commit "📖 docs: Update readme")"
+# 	assert_success
+
+# 	run commit-msg "$(commit "♻️  refactor: Rename all functions")"
+# 	assert_success
+
+# } # }}}
+
 @test "incorrectly formatted commit messages trigger an error" { # {{{
 
-	run ./src/commit-msg.sh "$(commit "feat Add a new feature")"
-	[ "${status}" -eq 1 ]
+	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=basic
 
-	run ./src/commit-msg.sh "$(commit "docs:Update readme")"
-	[ "${status}" -eq 1 ]
+	run commit-msg "$(commit "add a new feature")"
+	assert_failure
 
-	run ./src/commit-msg.sh "$(commit "style: format the code base")"
-	[ "${status}" -eq 1 ]
+	run commit-msg "$(commit "Fix a nasty bug.")"
+	assert_failure
 
-	run ./src/commit-msg.sh "$(commit "fix(core: Fix a bug")"
-	[ "${status}" -eq 1 ]
+	run commit-msg "$(commit "meta: update documentation")"
+	assert_failure
 
-	run ./src/commit-msg.sh "$(commit "chore: Update dependencies.")"
-	[ "${status}" -eq 1 ]
+	run commit-msg "$(commit "Meta: update documentation")"
+	assert_failure
+
+	run commit-msg "$(commit "Meta : Update documentation")"
+	assert_failure
+
+	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=conventional-commits
+
+	run commit-msg "$(commit "feat Add a new feature")"
+	assert_failure
+
+	run commit-msg "$(commit "docs:Update readme")"
+	assert_failure
+
+	run commit-msg "$(commit "style: format the code base")"
+	assert_failure
+
+	run commit-msg "$(commit "fix(core: Fix a bug")"
+	assert_failure
+
+	run commit-msg "$(commit "chore: Update dependencies.")"
+	assert_failure
 
 } # }}}
 
-@test "wrong commit types trigger an error" { # {{{
+@test "incorrect Conventional Commits types trigger an error" { # {{{
 
-	run ./src/commit-msg.sh "$(commit "bug: Fix a bug")"
-	[ "${status}" -eq 1 ]
+	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=conventional-commits
 
-	run ./src/commit-msg.sh "$(commit "ref: Refactor main module")"
-	[ "${status}" -eq 1 ]
+	run commit-msg "$(commit "bug: Fix a bug")"
+	assert_failure
 
-} # }}}
-
-@test "valid commit messages don't trigger an error" { # {{{
-
-	./src/commit-msg.sh "$(commit "feat: Add a feature")"
-
-	./src/commit-msg.sh "$(commit "test: Improve the tests")"
-
-	./src/commit-msg.sh "$(commit "fix: Fix a bug")"
-
-	./src/commit-msg.sh "$(commit "feat(parser): Add a feature in the parser")"
-
-	./src/commit-msg.sh "$(commit "refactor!: Create a breaking change")"
-
-	./src/commit-msg.sh "$(commit "revert!(core): Another breaking change")"
+	run commit-msg "$(commit "ref: Refactor main module")"
+	assert_failure
 
 } # }}}
 
 @test "emojis are automatically added before the commit type" { # {{{
 
-	./src/commit-msg.sh "$(commit "feat: Add a feature")"
-	[ "$(cat "${COMMIT_MSG_FILE}")" == "🌱 feat: Add a feature" ]
+	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=conventional-commits GIT_GRAPNEL_ADD_EMOJIS=1
 
-	./src/commit-msg.sh "$(commit "fix: Fix a bug")"
-	[ "$(cat "${COMMIT_MSG_FILE}")" == "🐛 fix: Fix a bug" ]
+	commit-msg "$(commit "feat: Add a feature")"
+	assert_equal "$(cat "${COMMIT_MSG_FILE}")" "🌱 feat: Add a feature"
 
-	./src/commit-msg.sh "$(commit "chore: Boring stuff")"
-	[ "$(cat "${COMMIT_MSG_FILE}")" == "🔧 chore: Boring stuff" ]
+	commit-msg "$(commit "🌱 feat: Add a feature")"
+	assert_equal "$(cat "${COMMIT_MSG_FILE}")" "🌱 feat: Add a feature"
 
-	./src/commit-msg.sh "$(commit "config: Update config")"
-	[ "$(cat "${COMMIT_MSG_FILE}")" == "🔩 config: Update config" ]
+	commit-msg "$(commit "fix: Fix a bug")"
+	assert_equal "$(cat "${COMMIT_MSG_FILE}")" "🐛 fix: Fix a bug"
 
-	./src/commit-msg.sh "$(commit "docs: Update readme")"
-	[ "$(cat "${COMMIT_MSG_FILE}")" == "📖 docs: Update readme" ]
+	commit-msg "$(commit "chore: Boring stuff")"
+	assert_equal "$(cat "${COMMIT_MSG_FILE}")" "🔧 chore: Boring stuff"
+
+	commit-msg "$(commit "config: Update config")"
+	assert_equal "$(cat "${COMMIT_MSG_FILE}")" "🔩 config: Update config"
+
+	commit-msg "$(commit "docs: Update readme")"
+	assert_equal "$(cat "${COMMIT_MSG_FILE}")" "📖 docs: Update readme"
+
+	commit-msg "$(commit "$(echo -e "feat: Add a feature\n\nThis is a new feature.")")"
+	assert_equal "$(cat "${COMMIT_MSG_FILE}")" "$(echo -e "🌱 feat: Add a feature\n\nThis is a new feature.")"
+
+	commit-msg "$(commit "$(echo -e "feat: Add a feature\n\nThis is a new feature.\n\nMore infos here.")")"
+	assert_equal "$(cat "${COMMIT_MSG_FILE}")" "$(echo -e "🌱 feat: Add a feature\n\nThis is a new feature.\n\nMore infos here.")"
 
 } # }}}
 
-@test "multi-line commits work too" { # {{{
+@test "spelling mistakes trigger an error" { # {{{
 
-	./src/commit-msg.sh "$(commit "feat: Add a feature\n\nThis is a new feature.")"
-	[ "$(cat "${COMMIT_MSG_FILE}")" == "$(echo -e "🌱 feat: Add a feature\n\nThis is a new feature.")" ]
+	run commit-msg "$(commit "Spelling miskates are ignord by defaut")"
+	assert_success
+
+	export GIT_GRAPNEL_SPELLCHECK=1
+
+	run commit-msg "$(commit "No spelling mistakes here")"
+	assert_success
+
+	run commit-msg "$(commit "We all make mitsakes")" <<< 'n'
+	assert_failure
+	assert_output --partial "Some spelling mistakes were detected"
+
+	run commit-msg "$(commit "Ignoring a posible typo")" <<< 'y'
+	assert_success
+
+	run commit-msg "$(commit "Typos shoulld be highligted")" <<< 'n'
+	assert_failure
+	assert_output --partial "$(echo -e "Typos \e[31mshoulld\e[0m be \e[31mhighligted\e[0m")"
+
+	run commit-msg "$(commit 'Typos inside backquotes should be ignored: `foo` `bar` `camel-case-msg`')"
+	assert_success
 
 } # }}}
 
-@test "emojis before the commit type are ignored" { # {{{
+@test "pairs of single quotes are converted to backquotes" { # {{{
 
-	./src/commit-msg.sh "$(commit "🌱 feat: Add a feature")"
-	[ "$(cat "${COMMIT_MSG_FILE}")" == "🌱 feat: Add a feature" ]
+	commit-msg "$(commit "Change ''foo'' to ''bar''")"
+	assert_equal "$(cat "${COMMIT_MSG_FILE}")" "Change ''foo'' to ''bar''"
 
-	./src/commit-msg.sh "$(commit "📖 docs: Update readme")"
-	[ "$(cat "${COMMIT_MSG_FILE}")" == "📖 docs: Update readme" ]
+	export GIT_GRAPNEL_CONVERT_SINGLE_QUOTE_PAIRS=1
 
-	./src/commit-msg.sh "$(commit "♻️  refactor: Rename all functions")"
-	[ "$(cat "${COMMIT_MSG_FILE}")" == "♻️  refactor: Rename all functions" ]
+	commit-msg "$(commit "Change ''foo'' to ''bar''")"
+	assert_equal "$(cat "${COMMIT_MSG_FILE}")" 'Change `foo` to `bar`'
+
+	commit-msg "$(commit "Don't touch other single quotes")"
+	assert_equal "$(cat "${COMMIT_MSG_FILE}")" "Don't touch other single quotes"
 
 } # }}}
