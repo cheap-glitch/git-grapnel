@@ -2,7 +2,7 @@
   "private": true,
   "name": "git-grapnel",
   "description": "A collection of useful git hooks written in Bash.",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "license": "ISC",
   "repository": {
     "type": "git",

@@ -1,93 +1,98 @@
-<div align="center"><img src="./docs/banner.png" width="380" alt="A drawing of a grappling hook, with the word “git-grapnel” under it."></div>
-<p>&nbsp;</p>
+<img src="/docs/banner.png" width="380" align="center" alt="A drawing of a grappling hook, with the word “git-grapnel” under it."></div>
 
-> This  is  a collection  of  client-side  git hooks  I  use  in all  my  repos,
-> written  in Bash.  These  aren't  meant to  be  used  as&#8209;is, but  rather
-> as  examples  and  inspiration  for  you own  hooks.  Each  script  is  linted
-> with  [shellcheck](https://github.com/koalaman/shellcheck)   and  tested  with
-> [bats](https://github.com/bats-core/bats-core).
+![License](https://badgen.net/github/license/cheap-glitch/git-grapnel?color=green)
+![Latest release](https://badgen.net/github/release/cheap-glitch/git-grapnel?color=green)
 
-## About git hooks
+This is a collection of custom [git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
 
-A hook is  simply an executable file  that git will call either  before or after
-performing some operation. A  hook is always run at the  root of the repository,
-and is  passed some arguments  relevant to the  on-going operation. It  can also
-force git to abort the current task by returning a non-zero exit code.
+## Features
 
-## Hooks
+ * Automatically lint any modified files before committing
+ * Smart spellchecking of commit messages
+ * Can enforce the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0) specification
+ * …and more!
 
-### [`pre-commit`](https://github.com/cheap-glitch/git-grapnel/blob/main/src/pre-commit.sh)
-This hook is run  whenever committing to the repo, and can  be bypassed with the
+> Note: even thought  these scripts can be configured to  a certain degree, they
+> can't  possibly cover  all existing  use  cases, and  thus are  meant more  as
+> blueprints and sources of inspiration rather than comprehensive solutions.
+
+## Installation
+
+First, [download the  scripts](https://github.com/cheap-glitch/git-grapnel/releases/latest)
+and make them executable (`chmod +x <scripts>`).
+
+### For a single git repo
+
+Place the scripts in a folder named  `hooks` inside the `.git` directory of that
+repo.
+
+### For every git repo
+
+Ensure the scripts are in your `PATH` so that `git` can execute them.
+
+Then  point the  `core.hooksPath` config  option  to the  folder containing  the
+scripts, e.g. if they're stored in `~/.git-grapnel`:
+
+```shell
+git config core.hooksPath ~/.git-grapnel
+```
+
+### External dependencies
+
+Some of the scripts  use external tools to accomplish their  tasks, so make sure
+you install them too:
+ * [jq](https://stedolan.github.io/jq) to parse JSON data
+ * [aspell](http://aspell.net) to spellcheck commit messages
+
+## Usage
+
+Each  of  the  hooks can  be  bypassed  by  calling  its git  command  with  the
 `--no-verify` option.
 
-The script prevents committing at all if  there's no `.gitignore` in the repo or
-if some "dangerous" files aren't properly excluded.
+All  the features  are disabled  by  default, and  each  on can  be enabled  and
+configured by setting some environment variables (`GIT_GRAPNEL_*`).
 
-### [`commit-msg`](https://github.com/cheap-glitch/git-grapnel/blob/main/src/commit-msg.sh)
-This hook is run  whenever committing to the repo, and can  be bypassed with the
-`--no-verify` option.
+### [pre-commit](https://github.com/cheap-glitch/git-grapnel/blob/main/src/pre-commit)
 
-For repos owned by the committer (i.e., repos that aren't GitHub forks), it will:
- * enforce the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) specification
- * add an emoji before the commit message type
+This hook is run whenever committing to a repo.
 
-It will also, regardless of the repo type:
- * check the spelling of  the whole  message (including an optional description)
-   and highlight possible typos
- * convert  pairs of  single  quotes (`''`) into  a single  back quote  (this is
-   useful when you're used to surrounding your commit message with double quotes
-   on the command line)
+Setting `GIT_GRAPNEL_LINT_ON_COMMIT` to `1` will enable the automatic linting of
+modified source  files. The commit will  be cancelled if any  errors or warnings
+are produced.
 
-Amending commits that don't modify the commit message are ignored.
+### [commit-msg](https://github.com/cheap-glitch/git-grapnel/blob/main/src/commit-msg)
 
-External programs used:
- * `curl` and [jq](https://stedolan.github.io/jq/) to check for forks and  cache
-   the result
- * `aspell` to check for possible misspelled words
+This hook is run whenever committing to a repo.
 
-### [`pre-push`](https://github.com/cheap-glitch/git-grapnel/blob/main/src/pre-push.sh)
-This hook  is run whenever  pushing to  a remote, and  can be bypassed  with the
-`--no-verify` option.
+Setting  `GIT_GRAPNEL_COMMIT_MSG_FORMAT` to  one  of the  following values  will
+enforce that particular format for commit message:
+ * `basic`: the message must start with a capital letter and not end with a full stop
+ * `conventional-commits`: the message must conform to the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0) specification
 
-It  automatically lints  the codebase  and run  the testing  scripts present  in
-`package.json`, preventing the transfer of objects should any of them fail.
+It can also:
+ * spellcheck the commit message and highlight possible typos (`GIT_GRAPNEL_SPELLCHECK`)
+ * convert  pairs of  single  quotes (`''`) into  a single  back quote — useful when you
+   surround the message in double quotes on the command line (`GIT_GRAPNEL_CONVERT_SINGLE_QUOTE_PAIRS`)
+ * automatically add a corresponding emoji at the start of Conventional Commits messages (`GIT_GRAPNEL_ADD_EMOJIS`)
 
-### [`post-merge`](https://github.com/cheap-glitch/git-grapnel/blob/main/src/post-merge.sh)
-This hook  is run after  a successful merge. It  reinstalls the Node  modules as
+### [pre-push](https://github.com/cheap-glitch/git-grapnel/blob/main/src/pre-push)
+
+This hook is run whenever pushing to a remote.
+
+Setting  `GIT_GRAPNEL_PRE_PUSH_CHECKS`  to  `1`   will  automatically  lint  the
+codebase and  run the testing scripts  present in `package.json`, and  abort the
+push if any of them fail.
+
+### [post-merge](https://github.com/cheap-glitch/git-grapnel/blob/main/src/post-merge)
+
+This hook is run after a successful merge.
+
+Setting `GIT_GRAPNEL_AUTO_INSTALL`  to `1`  will reinstall  the Node  modules as
 needed to keep them in sync with `package-lock.json`.
 
-## Installing a client-side hook
+## Contributing
 
-### Copying the script
-The simplest way to install a hook script is to copy it in the `hooks` directory
-located inside the `.git` folder of your repo. Note that you will need to remove
-the extension for `git` to pick it up.
-
-### Using a link
-If  you want  to reuse  your scripts  in several  repos, soft  links are  a good
-solution, e.g.:
-```text
-ln -s -T </path/to/script.sh> </path/to/repo>/.git/hooks/commit-msg
-```
-
-Here's an  example of a  script to automatically update  the hooks of  every git
-repo under `~`, using [fd](https://github.com/sharkdp/fd):
-```bash
-for gitfolder in $(fd -H -t d '^.git$' "${HOME}"); do
-	rm -r "${gitfolder}/hooks"/* &> /dev/null
-
-	for hook in /path/to/hooks/folder/*.sh; do
-		ln -sf -T "${hook}" "${gitfolder}/hooks/$(basename "${hook}" .sh)"
-	done
-done
-```
-
-### Add a hook to every new git repo
-You can  use a git template  to ensure that  every newly created repo  will have
-some hooks set up:
- 1. Create an empty folder somewhere (e.g. `~/.my-git-template/`)
- 2. Add a `hooks` folder in it with the scripts you want to use
- 3. Run `git config --global init.templateDir ~/.my-git-template`
+Contributions are welcomed! Please open an issue before submitting substantial changes.
 
 ## Related
 
@@ -96,18 +101,4 @@ some hooks set up:
 
 ## License
 
-```text
-Copyright (c) 2020-present, cheap glitch
-
-Permission to use, copy, modify, and/or distribute this software for any purpose
-with or without fee is hereby  granted, provided that the above copyright notice
-and this permission notice appear in all copies.
-
-THE SOFTWARE  IS PROVIDED "AS IS"  AND THE AUTHOR DISCLAIMS  ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING  ALL IMPLIED WARRANTIES OF MERCHANTABILITY AND
-FITNESS.  IN NO  EVENT  SHALL THE  AUTHOR  BE LIABLE  FOR  ANY SPECIAL,  DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS
-OF USE, DATA OR  PROFITS, WHETHER IN AN ACTION OF  CONTRACT, NEGLIGENCE OR OTHER
-TORTIOUS ACTION, ARISING OUT OF OR IN  CONNECTION WITH THE USE OR PERFORMANCE OF
-THIS SOFTWARE.
-```
+ISC
