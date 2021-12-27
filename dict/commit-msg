@@ -1,5 +1,6 @@
 personal_ws-1.1 en 0
 CLI
+CVS
 CommonJS
 DOM
 Deno
@@ -15,11 +16,15 @@ ToC
 TypeScript
 UI
 Vue
+backquote
+backquotes
 changelog
+checkmark
 clippy
 colorscheme
 colorschemes
 config
+debounce
 dev
 dir
 dropdown
@@ -36,6 +41,7 @@ init
 json
 linter
 md
+memoize
 middleware
 minified
 minify
