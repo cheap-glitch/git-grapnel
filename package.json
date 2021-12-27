@@ -17,7 +17,9 @@
     "test": "test"
   },
   "scripts": {
-    "lint": "find src -maxdepth 1 -type f -print0 | xargs --null -- shellcheck --enable=all --external-sources",
-    "test": "bats test"
+    "coverage": "bashcov test/test.sh",
+    "lint": "find src test -type f -print0 | xargs --null -- shellcheck --enable=all --external-sources",
+    "test": "bats test",
+    "test:watch": "watchexec --watch src --watch test --clear -- npm test"
   }
 }
