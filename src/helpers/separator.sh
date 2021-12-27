@@ -1,7 +1,11 @@
 # shellcheck shell=bash
 
-separator() {
-	echo -en "\e[1;30m"
-	for (( i=COLUMNS; i>0; i-- )); do echo -n '┈'; done
-	echo -en "\e[0m"
+# shellcheck source=src/helpers/format.sh
+source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/format.sh"
+
+separator=''
+for (( i=COLUMNS; i>0; i-- )); do separator="${separator}┈"; done
+
+print_separator() {
+	echo -en "${FMT_FG_BLACK}${separator}${FMT_RESET}"
 }
