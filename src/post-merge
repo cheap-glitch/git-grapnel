@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -eu -o pipefail
+shopt -u expand_aliases
+IFS=$'\n\t'
+
+SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+# shellcheck source=src/helpers/is-changed.sh
+source "${SOURCE_DIR}/helpers/is-changed.sh"
+
+if [[ -f package-lock.json ]] && is_changed package-lock.json; then
+	npm clean-install || npm install
+fi
