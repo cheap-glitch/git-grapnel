@@ -1,4 +1,5 @@
-<img src="/docs/banner.png" width="380" align="center" alt="A drawing of a grappling hook, with the word “git-grapnel” under it."></div>
+<img src="/docs/banner-light.png#gh-light-mode-only" width="380" align="center" alt="A drawing of a grappling hook, with the word “git-grapnel” under it."></div>
+<img src="/docs/banner-dark.png#gh-dark-mode-only"   width="380" align="center" alt="A drawing of a grappling hook, with the word “git-grapnel” under it."></div>
 
 ![License](https://badgen.net/github/license/cheap-glitch/git-grapnel?color=green)
 ![Latest release](https://badgen.net/github/release/cheap-glitch/git-grapnel?color=green)
