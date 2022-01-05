@@ -1,8 +1,14 @@
-<img src="/docs/banner-light.png#gh-light-mode-only" width="380" align="center" alt="A drawing of a grappling hook, with the word “git-grapnel” under it."></div>
-<img src="/docs/banner-dark.png#gh-dark-mode-only"   width="380" align="center" alt="A drawing of a grappling hook, with the word “git-grapnel” under it."></div>
+<div align="center">
 
+<img src="/docs/banner-light.png#gh-light-mode-only" width="380" alt="A drawing of a grappling hook, with the word “git-grapnel” under it.">
+<img src="/docs/banner-dark.png#gh-dark-mode-only"   width="380" alt="A drawing of a grappling hook, with the word “git-grapnel” under it.">
+
+<p></p>
+   
 ![License](https://badgen.net/github/license/cheap-glitch/git-grapnel?color=green)
 ![Latest release](https://badgen.net/github/release/cheap-glitch/git-grapnel?color=green)
+
+</div>
 
 This is a collection of custom [git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks).
 
