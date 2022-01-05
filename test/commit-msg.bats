@@ -19,60 +19,60 @@ setup() {
 	export GIT_GRAPNEL_CONVERT_SINGLE_QUOTE_PAIRS=0
 }
 
-# @test "valid commit messages don't trigger an error" { # {{{
+@test "valid commit messages don't trigger an error" { # {{{
 
-# 	run commit-msg "$(commit "add a new feature")"
-# 	assert_success
+	run commit-msg "$(commit "add a new feature")"
+	assert_success
 
-# 	run commit-msg "$(commit "style: format the code base")"
-# 	assert_success
+	run commit-msg "$(commit "style: format the code base")"
+	assert_success
 
-# 	run commit-msg "$(commit "chore: Update dependencies.")"
-# 	assert_success
+	run commit-msg "$(commit "chore: Update dependencies.")"
+	assert_success
 
-# 	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=basic
+	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=basic
 
-# 	run commit-msg "$(commit "Add a new feature")"
-# 	assert_success
+	run commit-msg "$(commit "Add a new feature")"
+	assert_success
 
-# 	run commit-msg "$(commit "Fix a nasty bug")"
-# 	assert_success
+	run commit-msg "$(commit "Fix a nasty bug")"
+	assert_success
 
-# 	run commit-msg "$(commit "Meta: Update documentation")"
-# 	assert_success
+	run commit-msg "$(commit "Meta: Update documentation")"
+	assert_success
 
-# 	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=conventional-commits
+	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=conventional-commits
 
-# 	run commit-msg "$(commit "feat: Add a feature")"
-# 	assert_success
+	run commit-msg "$(commit "feat: Add a feature")"
+	assert_success
 
-# 	run commit-msg "$(commit "test: Improve the tests")"
-# 	assert_success
+	run commit-msg "$(commit "test: Improve the tests")"
+	assert_success
 
-# 	run commit-msg "$(commit "fix: Fix a bug")"
-# 	assert_success
+	run commit-msg "$(commit "fix: Fix a bug")"
+	assert_success
 
-# 	run commit-msg "$(commit "feat(parser): Add a feature in the parser")"
-# 	assert_success
+	run commit-msg "$(commit "feat(parser): Add a feature in the parser")"
+	assert_success
 
-# 	run commit-msg "$(commit "refactor!: Create a breaking change")"
-# 	assert_success
+	run commit-msg "$(commit "refactor!: Create a breaking change")"
+	assert_success
 
-# 	run commit-msg "$(commit "revert!(core): Another breaking change")"
-# 	assert_success
+	run commit-msg "$(commit "revert!(core): Another breaking change")"
+	assert_success
 
-# 	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=conventional-commits GIT_GRAPNEL_ADD_EMOJIS=1
+	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=conventional-commits GIT_GRAPNEL_ADD_EMOJIS=1
 
-# 	run commit-msg "$(commit "🌱 feat: Add a feature")"
-# 	assert_success
+	run commit-msg "$(commit "🌱 feat: Add a feature")"
+	assert_success
 
-# 	run commit-msg "$(commit "📖 docs: Update readme")"
-# 	assert_success
+	run commit-msg "$(commit "📖 docs: Update readme")"
+	assert_success
 
-# 	run commit-msg "$(commit "♻️  refactor: Rename all functions")"
-# 	assert_success
+	run commit-msg "$(commit "♻️  refactor: Rename all functions")"
+	assert_success
 
-# } # }}}
+} # }}}
 
 @test "incorrectly formatted commit messages trigger an error" { # {{{
 
