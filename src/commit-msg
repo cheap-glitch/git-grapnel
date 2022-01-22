@@ -20,7 +20,7 @@ details="$(sed 1d <<< "${message}")"
 if git rev-parse --is-inside-work-tree &>/dev/null && git rev-list HEAD &>/dev/null && [[ "${message}" == "$(git rev-list -n 1 --format=%B HEAD | sed 1d)" ]]; then exit 0; fi
 
 check_summary_period() {
-	local summary="$1"
+	local summary="${1}"
 
 	# Check that the summary does NOT end with a period
 	if [[ "${summary: -1}" == '.' ]]; then
