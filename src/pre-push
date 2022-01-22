@@ -4,12 +4,12 @@ shopt -u expand_aliases
 IFS=$'\n\t'
 
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-# shellcheck source=src/helpers/format.sh
-source "${SOURCE_DIR}/helpers/format.sh"
-# shellcheck source=src/helpers/is-own-repo.sh
-source "${SOURCE_DIR}/helpers/is-own-repo.sh"
-# shellcheck source=src/helpers/run-npm-script.sh
-source "${SOURCE_DIR}/helpers/run-npm-script.sh"
+# shellcheck source=src/helpers/format.bash
+source "${SOURCE_DIR}/helpers/format.bash"
+# shellcheck source=src/helpers/is-own-repo.bash
+source "${SOURCE_DIR}/helpers/is-own-repo.bash"
+# shellcheck source=src/helpers/run-npm-script.bash
+source "${SOURCE_DIR}/helpers/run-npm-script.bash"
 
 if [[ ${GIT_GRAPNEL_PRE_PUSH_CHECKS:-0} -eq 0 ]]; then exit 0; fi
 

@@ -1,5 +1,3 @@
-# shellcheck shell=bash
-
 is_changed() {
 	mapfile -t changed_files < <(git diff --name-only 'HEAD@{2}..')
 

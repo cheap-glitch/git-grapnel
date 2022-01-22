@@ -4,14 +4,14 @@ shopt -u expand_aliases
 IFS=$'\n\t'
 
 SOURCE_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
-# shellcheck source=src/helpers/confirm.sh
-source "${SOURCE_DIR}/helpers/confirm.sh"
-# shellcheck source=src/helpers/contains.sh
-source "${SOURCE_DIR}/helpers/contains.sh"
-# shellcheck source=src/helpers/is-own-repo.sh
-source "${SOURCE_DIR}/helpers/is-own-repo.sh"
+# shellcheck source=src/helpers/confirm.bash
+source "${SOURCE_DIR}/helpers/confirm.bash"
+# shellcheck source=src/helpers/contains.bash
+source "${SOURCE_DIR}/helpers/contains.bash"
+# shellcheck source=src/helpers/is-own-repo.bash
+source "${SOURCE_DIR}/helpers/is-own-repo.bash"
 
-tmpfile="$1"
+tmpfile="${1}"
 message="$(rg --invert-match '^#' --color=never --trim "${tmpfile}")"
 summary="$(head --lines=1 <<< "${message}")"
 details="$(sed 1d <<< "${message}")"

@@ -1,5 +1,3 @@
-# shellcheck shell=bash
-
 is_own_repo() {
 	# Check that the local repo is not a GitHub fork (no `upstream` branch)
 	# and is not owned by someone else (the `origin` URL contains the user's name)

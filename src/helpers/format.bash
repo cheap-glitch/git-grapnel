@@ -1,5 +1,3 @@
-# shellcheck shell=bash
-
 export FMT_RESET="\e[0m"
 
 export FMT_FG_BLACK="\e[1;30m"

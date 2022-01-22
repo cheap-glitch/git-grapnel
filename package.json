@@ -17,8 +17,8 @@
     "test": "test"
   },
   "scripts": {
-    "coverage": "bashcov test/test.sh",
     "lint": "find src test -type f -print0 | xargs --null -- shellcheck --enable=all --external-sources",
+    "coverage": "bashcov test/test.bash",
     "test": "bats test",
     "test:watch": "watchexec --watch src --watch test --clear -- npm test"
   },

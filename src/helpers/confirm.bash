@@ -1,9 +1,7 @@
-# shellcheck shell=bash
-
-# shellcheck source=src/helpers/format.sh
-source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/format.sh"
-# shellcheck source=src/helpers/is-run-by-git.sh
-source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/is-run-by-git.sh"
+# shellcheck source=src/helpers/format.bash
+source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/format.bash"
+# shellcheck source=src/helpers/is-run-by-git.bash
+source "$(dirname "$(realpath "${BASH_SOURCE[0]}")")/is-run-by-git.bash"
 
 confirm() {
 	local prompt default_answer

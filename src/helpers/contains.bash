@@ -1,5 +1,3 @@
-# shellcheck shell=bash
-
 contains() {
 	local list="$1"
 	local string="$2"
