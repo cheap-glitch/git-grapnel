@@ -21,5 +21,8 @@
     "lint": "find src test -type f -print0 | xargs --null -- shellcheck --enable=all --external-sources",
     "test": "bats test",
     "test:watch": "watchexec --watch src --watch test --clear -- npm test"
+  },
+  "devDependencies": {
+    "bats-assert": "^2.0.0"
   }
 }

@@ -1,22 +1,24 @@
 #!/usr/bin/env bats
 # shellcheck disable=SC2016,SC2030,SC2031
 
+TEST_DIR="$(dirname "${BATS_TEST_FILENAME:-}")"
 COMMIT_MSG_FILE="${BATS_TMPDIR:-}/commit-message"
-commit() {
-	echo "$1" >"${COMMIT_MSG_FILE}"
-	echo "${COMMIT_MSG_FILE}"
-}
 
 setup() {
-	load /usr/lib/bats-support/load.bash
-	load /usr/lib/bats-assert/load.bash
+	load ./node_modules/bats-support/load.bash
+	load ./node_modules/bats-assert/load.bash
 
-	PATH="${PATH}:$(dirname "${BATS_TEST_FILENAME:-}")/../src"
+	PATH="${PATH}:${TEST_DIR}/../src"
 
 	export GIT_GRAPNEL_ADD_EMOJIS=0
 	export GIT_GRAPNEL_SPELLCHECK=0
 	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=none
 	export GIT_GRAPNEL_CONVERT_SINGLE_QUOTE_PAIRS=0
+}
+
+commit() {
+	echo "$1" >"${COMMIT_MSG_FILE}"
+	echo "${COMMIT_MSG_FILE}"
 }
 
 @test "valid commit messages don't trigger an error" { # {{{
