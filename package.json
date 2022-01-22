@@ -13,12 +13,15 @@
   },
   "author": "cheap glitch <cheap.glitch@gmail.com> (https://github.com/cheap-glitch)",
   "homepage": "https://github.com/cheap-glitch/git-grapnel#readme",
+  "engines": {
+    "bash": "^5.1.16"
+  },
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "lint": "find src test -type f -print0 | xargs --null -- shellcheck --enable=all --external-sources",
     "coverage": "bashcov test/test.bash",
+    "lint": "find src test '(' -type f -and -executable -or -name '*.bash' -or -name '*.bats' ')' -print0 | xargs --null -- shellcheck --enable=all --external-sources",
     "test": "bats test",
     "test:watch": "watchexec --watch src --watch test --clear -- npm test"
   },
