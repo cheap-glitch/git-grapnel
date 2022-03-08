@@ -40,7 +40,7 @@ if is_own_repo; then case "${GIT_GRAPNEL_COMMIT_MSG_FORMAT:-}" in
 		fi
 
 		check_summary_period "${summary}"
-	;;
+		;;
 
 	# https://www.conventionalcommits.org/en/v1.0.0/#summary
 	conventional-commits)
@@ -86,7 +86,7 @@ if is_own_repo; then case "${GIT_GRAPNEL_COMMIT_MSG_FORMAT:-}" in
 		fi
 
 		check_summary_period "${summary}"
-	;;
+		;;
 
 	*) ;;
 esac; fi

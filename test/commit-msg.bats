@@ -17,7 +17,7 @@ setup() {
 }
 
 commit() {
-	echo "$1" >"${COMMIT_MSG_FILE}"
+	echo "${1}" >"${COMMIT_MSG_FILE}"
 	echo "${COMMIT_MSG_FILE}"
 }
 
