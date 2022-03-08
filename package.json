@@ -1,18 +1,14 @@
 {
   "private": true,
   "name": "git-grapnel",
-  "description": "A collection of useful git hooks written in Bash.",
   "version": "1.0.0",
+  "description": "A collection of useful git hooks written in Bash.",
   "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/cheap-glitch/git-grapnel.git"
-  },
-  "bugs": {
-    "url": "https://github.com/cheap-glitch/git-grapnel/issues"
-  },
   "author": "cheap glitch <cheap.glitch@gmail.com> (https://github.com/cheap-glitch)",
+  "repository": "cheap-glitch/git-grapnel",
   "homepage": "https://github.com/cheap-glitch/git-grapnel#readme",
+  "bugs": "https://github.com/cheap-glitch/git-grapnel/issues",
+  "funding": "https://github.com/sponsors/cheap-glitch",
   "engines": {
     "bash": "^5.1.16"
   },
