@@ -195,4 +195,9 @@ commit() {
 	commit-msg "$(commit "Don't touch other single quotes")"
 	assert_equal "$(cat "${COMMIT_MSG_FILE}")" "Don't touch other single quotes"
 
+	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=conventional-commits
+
+	commit-msg "$(commit "chore: Change ''foo'' to ''bar''")"
+	assert_equal "$(cat "${COMMIT_MSG_FILE}")" 'chore: Change `foo` to `bar`'
+
 } # }}}

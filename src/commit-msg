@@ -92,7 +92,10 @@ if is_own_repo; then case "${GIT_GRAPNEL_COMMIT_MSG_FORMAT:-}" in
 esac; fi
 
 # Convert pairs of simple quotes into single back quotes
-if [[ ${GIT_GRAPNEL_CONVERT_SINGLE_QUOTE_PAIRS:-0} -eq 1 ]]; then message="${message//\'\'/\`}"; fi
+if [[ ${GIT_GRAPNEL_CONVERT_SINGLE_QUOTE_PAIRS:-0} -eq 1 ]]; then
+	message="${message//\'\'/\`}"
+	if [[ -n "${description:-}" ]]; then description="${description//\'\'/\`}"; fi
+fi
 
 # Check the spelling of the message
 if [[ ${GIT_GRAPNEL_SPELLCHECK:-0} -eq 1 ]]; then
