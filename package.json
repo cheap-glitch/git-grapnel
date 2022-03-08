@@ -16,8 +16,8 @@
     "test": "test"
   },
   "scripts": {
-    "coverage": "bashcov test/test.bash",
-    "lint": "find src test '(' -type f -and -executable -or -name '*.bash' -or -name '*.bats' ')' -print0 | xargs --null -- shellcheck --enable=all --external-sources",
+    "coverage": "bashcov --skip-uncovered -- bats test",
+    "lint": "(fd --type executable --print0; fd --extension bash --extension bats --print0) | xargs --null -- shellcheck --enable=all --external-sources",
     "lint:fix": "npm run lint -- --format=diff | git apply --unsafe-paths",
     "test": "bats test",
     "test:watch": "watchexec --watch src --watch test --clear -- npm test"
