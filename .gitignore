@@ -1,2 +1,4 @@
-/coverage/
+*.env
+/.coverage/
+/.coveralls.yml
 /node_modules/
