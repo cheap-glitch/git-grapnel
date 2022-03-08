@@ -2,11 +2,11 @@
 # shellcheck disable=SC2016,SC2030,SC2031
 
 TEST_DIR="$(dirname "${BATS_TEST_FILENAME:-}")"
-COMMIT_MSG_FILE="${BATS_TMPDIR:-}/commit-message"
+COMMIT_MSG_FILE="${BATS_SUITE_TMPDIR:-}/commit-message"
 
 setup() {
-	load ./node_modules/bats-support/load.bash
-	load ./node_modules/bats-assert/load.bash
+	load ../node_modules/bats-support/load.bash
+	load ../node_modules/bats-assert/load.bash
 
 	PATH="${PATH}:${TEST_DIR}/../src"
 
