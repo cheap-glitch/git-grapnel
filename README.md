@@ -1,12 +1,10 @@
 <div align="center">
 
-<img src="/docs/banner-light.png#gh-light-mode-only" width="380" alt="A drawing of a grappling hook, with the word “git-grapnel” under it.">
-<img src="/docs/banner-dark.png#gh-dark-mode-only"   width="380" alt="A drawing of a grappling hook, with the word “git-grapnel” under it.">
+<img src="docs/banner-light.png#gh-light-mode-only" width="380" alt="A drawing of a grappling hook, with the word “git-grapnel” under it.">
+<img src="docs/banner-dark.png#gh-dark-mode-only"   width="380" alt="A drawing of a grappling hook, with the word “git-grapnel” under it.">
 
-<p></p>
-
-![License](https://badgen.net/github/license/cheap-glitch/git-grapnel?color=green)
-![Latest release](https://badgen.net/github/release/cheap-glitch/git-grapnel?color=green)
+[![License](https://shields.io/github/license/cheap-glitch/git-grapnel)](LICENSE)
+[![Latest release](https://shields.io/github/v/release/cheap-glitch/git-grapnel?sort=semver&label=latest%20release&color=green)](https://github.com/cheap-glitch/git-grapnel/releases/latest)
 
 </div>
 
@@ -25,22 +23,22 @@ This is a collection of custom [git hooks](https://git-scm.com/book/en/v2/Custom
 
 ## Installation
 
-First, [download the  scripts](https://github.com/cheap-glitch/git-grapnel/releases/latest)
-and make them executable (`chmod +x <scripts>`).
+Clone the repo or download the scripts from [the latest release](https://github.com/cheap-glitch/git-grapnel/releases/latest),
+and make sure they're executable (`chmod +x <scripts>`).
 
 ### For a single git repo
 
 Place the scripts in a folder named  `hooks` inside the `.git` directory of that
 repo.
 
-### For every git repo
+### For every git repo on a machine
 
 Ensure the scripts are in your `PATH` so that `git` can execute them.
 
 Then  point the  `core.hooksPath` config  option  to the  folder containing  the
 scripts, e.g. if they're stored in `~/.git-grapnel`:
 
-```shell
+```
 git config core.hooksPath ~/.git-grapnel
 ```
 
@@ -103,8 +101,8 @@ Contributions are welcomed! Please open an issue before submitting substantial c
 
 ## Related
 
- * [Pro Git, 8.3 Customizing Git - Git Hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks) - More infos on git hooks
- * [git-toolbelt](https://github.com/nvie/git-toolbelt) - A collection of convenient utilities for everyday git usage
+ * [The official documentation on Git hooks](https://git-scm.com/book/en/v2/Customizing-Git-Git-Hooks)
+ * [`git-toolbelt`](https://github.com/nvie/git-toolbelt) – A collection of convenient utilities for everyday git usage
 
 ## License
 
