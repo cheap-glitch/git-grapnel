@@ -1,7 +1,7 @@
 {
   "private": true,
   "name": "git-grapnel",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A collection of useful git hooks written in Bash.",
   "license": "ISC",
   "author": "cheap glitch <cheap.glitch@gmail.com> (https://github.com/cheap-glitch)",
