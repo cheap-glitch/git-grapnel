@@ -3,6 +3,8 @@
 <img src="docs/banner-light.png#gh-light-mode-only" width="380" alt="A drawing of a grappling hook, with the word “git-grapnel” under it.">
 <img src="docs/banner-dark.png#gh-dark-mode-only"   width="380" alt="A drawing of a grappling hook, with the word “git-grapnel” under it.">
 
+<p></p>
+
 [![License](https://shields.io/github/license/cheap-glitch/git-grapnel)](LICENSE)
 [![Latest release](https://shields.io/github/v/release/cheap-glitch/git-grapnel?sort=semver&label=latest%20release&color=green)](https://github.com/cheap-glitch/git-grapnel/releases/latest)
 
