@@ -1,5 +1,4 @@
 {
-  "private": true,
   "name": "git-grapnel",
   "version": "1.0.1",
   "description": "A collection of useful git hooks written in Bash.",
@@ -9,9 +8,26 @@
   "homepage": "https://github.com/cheap-glitch/git-grapnel#readme",
   "bugs": "https://github.com/cheap-glitch/git-grapnel/issues",
   "funding": "https://github.com/sponsors/cheap-glitch",
+  "keywords": [
+    "bash",
+    "commit",
+    "conventionalcommits",
+    "git",
+    "hook",
+    "hooks",
+    "lint",
+    "log",
+    "shell",
+    "summary",
+    "terminal"
+  ],
   "engines": {
     "bash": "^5.1.16"
   },
+  "files": [
+    "dict",
+    "src"
+  ],
   "directories": {
     "test": "test"
   },
