@@ -10,5 +10,11 @@ source "${SOURCE_DIR}/helpers/is-changed.bash"
 if [[ ${GIT_GRAPNEL_AUTO_INSTALL:-0} -eq 0 ]]; then exit 0; fi
 
 if [[ -f package-lock.json ]] && is_changed package-lock.json; then
-	npm clean-install || npm install
+	npm clean-install
+	exit 0
+fi
+
+if [[ -f package.json ]] && is_changed package.json; then
+	npm install
+	exit 0
 fi
