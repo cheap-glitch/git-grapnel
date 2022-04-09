@@ -33,7 +33,12 @@ check_summary_period() {
 if is_own_repo; then case "${GIT_GRAPNEL_COMMIT_MSG_FORMAT:-}" in
 
 	basic)
-		if [[ "${summary^^}" =~ ^META[^[:alnum:]_] && ! "${summary}" =~ ^(Meta: )[0-9A-Z] ]] || [[ ! "${summary}" =~ ^[0-9A-Z] ]]; then
+		re_basic_msg='^Meta: [0-9A-Z]'
+		re_prefixed_msg='^([A-Z][a-z]+) *: *[0-9A-Z]'
+
+		if [[ ! "${summary}" =~ ^[0-9A-Z] ]] \
+		|| [[ "${summary^^}" =~ ^META[^[:alnum:]_] && ! "${summary}" =~ ${re_basic_msg} ]] \
+		|| [[ "${summary}" =~ ${re_prefixed_msg} && "${BASH_REMATCH[1]}" != Meta ]]; then
 			echo 'Please use the following format for your commit messages:'
 			echo '(Meta: )?<Description>'
 			exit 1
@@ -44,12 +49,10 @@ if is_own_repo; then case "${GIT_GRAPNEL_COMMIT_MSG_FORMAT:-}" in
 
 	# https://www.conventionalcommits.org/en/v1.0.0/#summary
 	conventional-commits)
-		if [[ ${GIT_GRAPNEL_ADD_EMOJIS:-0} -eq 1 ]]; then
-			emoji_regex='.{1,2} {1,2}'
-		fi
+		if [[ ${GIT_GRAPNEL_ADD_EMOJIS:-0} -eq 1 ]]; then emoji_regex='.{1,2} {1,2}'; fi
+		re_cc_msg='^('"${emoji_regex:-}"')?(([a-z]+)!?(\([a-z]+\))?): ([0-9A-Z].+)$'
 
-		cc_regex='^('"${emoji_regex:-}"')?(([a-z]+)!?(\([a-z]+\))?): ([0-9A-Z].+)$'
-		if [[ ! "${summary}" =~ ${cc_regex} ]]; then
+		if [[ ! "${summary}" =~ ${re_cc_msg} ]]; then
 			echo 'Please use the following format for your commit messages:'
 			echo '<type>[!][(scope)]: <Description>'
 			exit 1

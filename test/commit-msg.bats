@@ -95,6 +95,12 @@ commit() {
 	run commit-msg "$(commit "Meta : Update documentation")"
 	assert_failure
 
+	run commit-msg "$(commit "Meat: Is murder")"
+	assert_failure
+
+	run commit-msg "$(commit "Meat : Is murder")"
+	assert_failure
+
 	export GIT_GRAPNEL_COMMIT_MSG_FORMAT=conventional-commits
 
 	run commit-msg "$(commit "feat Add a new feature")"
